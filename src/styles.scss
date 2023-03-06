@@ -1,1 +1,69 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@import 'utilities/variables';
+@import 'utilities/layout';
+@import 'utilities/design';
+@import 'utilities/text';
+@import 'utilities/text-colors';
+@import 'utilities/backgrounds';
+@import 'utilities/font';
+@import 'utilities/scrollbar';
+@import 'utilities/dimensions';
+@import 'components/table';
+@import 'components/button';
+@import 'components/tooltip';
+@import 'components/input';
+@import 'material/material-accordion';
+@import 'material/material-icons';
+@import 'material/material-popups';
+
+$custom-typography: mat.define-typography-config($font-family: '"Inter", sans-serif');
+@include mat.core($custom-typography);
+
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: $inter-font;
+	font-weight: 400;
+	color: $base-primary;
+	background-color: $base-background;
+}
+
+.theme-transition {
+	* {
+		transition: background-color 200ms;
+	}
+}
+
+a {
+	text-decoration: none;
+}
+
+span {
+	color: inherit;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* User Select */
+body {
+	::-moz-selection {
+		color: $base-primary;
+		background: $selected-secondary;
+	}
+
+	::selection {
+		color: $base-primary;
+		background: $selected-secondary;
+	}
+}
