@@ -1,0 +1,19 @@
+@import 'variables';
+
+.side-panel-stepper {
+	.step {
+		transition: left 300ms ease-out;
+
+		&.active {
+			left: 0;
+		}
+
+		&.before {
+			left: -100%;
+		}
+
+		&.after {
+			left: 100%;
+		}
+	}
+}

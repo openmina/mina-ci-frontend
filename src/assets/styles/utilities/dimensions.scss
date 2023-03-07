@@ -6,6 +6,18 @@
 	height: 100vh !important;
 }
 
+.h-minus-xxl {
+	height: calc(100% - 48px) !important;
+}
+
+.h-minus-xl {
+	height: calc(100% - 40px) !important;
+}
+
+.h-minus-lg {
+	height: calc(100% - 36px) !important;
+}
+
 .w-100 {
 	width: 100% !important;
 }
@@ -117,5 +129,17 @@
 
 	.lh-sm {
 		line-height: 32px;
+	}
+
+	.h-minus-xxl {
+		height: calc(100% - 48px) !important;
+	}
+
+	.h-minus-xl {
+		height: calc(100% - 44px) !important;
+	}
+
+	.h-minus-lg {
+		height: calc(100% - 40px) !important;
 	}
 }

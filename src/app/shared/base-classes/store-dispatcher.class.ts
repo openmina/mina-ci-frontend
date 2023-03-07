@@ -16,7 +16,7 @@ export abstract class StoreDispatcher extends ManualDetection implements OnDestr
 
   protected store: Store<MinaState> = inject<Store<MinaState>>(Store<MinaState>);
 
-  protected dispatch<Action extends FeatureAction<any>, P>(actionClass: new (payload?: P) => ActionParam<Action>, payload?: P): void {
+  protected dispatch<Action extends FeatureAction<any>, P = any>(actionClass: new (payload?: P) => ActionParam<Action>, payload?: P): void {
     this.store.dispatch<Action>(new actionClass(payload));
   }
 

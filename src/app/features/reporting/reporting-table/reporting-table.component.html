@@ -1,0 +1,63 @@
+<div class="mina-table overflow-x-auto pt-10 h-100">
+  <cdk-virtual-scroll-viewport class="border-bottom h-100 overflow-y-auto"
+                               [itemSize]="itemSize">
+    <div *cdkVirtualFor="let report of reports; let i=index"
+         [style.height.px]="itemSize + 10"
+         class="c-row pb-10 pl-10">
+      <div (click)="onRowClick(report)"
+           [class.active]="activeReport === report"
+           class="p-10 h-100 flex-row flex-column-lg flex-between border border-rad-8">
+        <div class="flex-column flex-around h-100">
+          <span class="title">{{ report.name }}</span>
+          <span class="tertiary flex-row align-center">
+            <span class="mina-icon icon-200">commit</span>
+            <span class="ml-5 flex-row align-center">
+              {{ report.commit }} to {{ report.repo }}&nbsp;&nbsp;{{ '18 hours' }} ago · {{ report.timestamp }}&nbsp;
+              <a [href]="report.link" target="_blank" [tooltip]="'Open in Drone'" [showDelay]="300"
+                 class="tertiary text-decoration-underline-hover ml-10 text-capitalize flex-row align-center">
+                {{ report.status }}
+                <mat-icon svgIcon="drone" class="ml-5"></mat-icon>
+              </a>
+            </span>
+          </span>
+        </div>
+        <div class="flex-row">
+          <div class="flex-column flex-around bg-container border-rad-4 p-8 mr-8">
+            <span class="primary">Transactions</span>
+            <span class="f-600 f-big">{{ report.transactions }}</span>
+          </div>
+          <div class="details flex-row border-rad-4 overflow-hidden">
+            <div class="bg-container" [tooltip]="report.filled + ' filled'">
+              <div class="flex-column flex-around bg-container-hover p-8 h-100">
+                <span class="primary">Blocks</span>
+                <span class="f-600 f-big">{{ report.blocks }}</span>
+              </div>
+            </div>
+            <div class="flex-column flex-around bg-container p-8">
+              <span class="primary">Blocks</span>
+              <span class="f-600 f-big">{{ report.blocks }}</span>
+            </div>
+            <div class="flex-column flex-around bg-container p-8">
+              <span class="primary">Blocks</span>
+              <span class="f-600 f-big">{{ report.blocks }}</span>
+            </div>
+            <div class="last-group flex-row bg-container p-8">
+              <div class="flex-column flex-around mr-16">
+                <span class="primary">Latency</span>
+                <span class="f-600 f-big">{{ report.latencyAvg }}s avg</span>
+              </div>
+              <div class="flex-column flex-around mr-10">
+                <span class="primary">Min</span>
+                <span class="f-600 f-big">{{ report.latencyMin }}s</span>
+              </div>
+              <div class="flex-column flex-around">
+                <span class="primary">Max</span>
+                <span class="f-600 f-big">{{ report.latencyMax }}s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>

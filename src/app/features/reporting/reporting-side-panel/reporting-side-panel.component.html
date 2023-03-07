@@ -1,0 +1,56 @@
+<div class="flex-column h-100">
+  <div class="flex-row flex-between align-center pl-12 pr-12 h-xxl">
+    <span class="secondary f-600">Report Detail</span>
+    <span class="mina-icon pointer tertiary primary-hover f-18"
+          (click)="closeSidePanel()">close
+    </span>
+  </div>
+  <div class="side-panel-stepper h-minus-xxl p-relative overflow-hidden">
+    <div class="step step-1 p-absolute w-100 h-100 flex-column" (click)="updateStep(2)"
+         [class.before]="activeStep > 1"
+         [class.active]="activeStep === 1">
+      <ng-container *ngTemplateOutlet="step1"></ng-container>
+    </div>
+    <div class="step step-2 p-absolute w-100 h-100 overflow-y-scroll flex-column"
+         [class.before]="activeStep > 2"
+         [class.after]="activeStep < 2"
+         [class.active]="activeStep === 2">
+      <ng-container *ngTemplateOutlet="step2"></ng-container>
+    </div>
+    <div class="step step-3 p-absolute w-100 h-100 overflow-y-scroll flex-column"
+         [class.after]="activeStep < 3"
+         [class.active]="activeStep === 3">
+      <ng-container *ngTemplateOutlet="step3"></ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #step1>
+  <div class="h-lg lh-lg f-600 pl-12">Blocks</div>
+  <div class="h-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
+    <span class="tertiary">Total</span>
+    <div class="flex-row align-center">
+      {{ activeReportDetail?.blocks.length }} blocks
+      <span class="mina-icon icon-200 ml-10">arrow_forward</span>
+    </div>
+  </div>
+  <div class="h-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
+    <span class="tertiary">Slowest Block</span>
+    <div class="flex-row align-center">
+      {{ activeReportDetail?.blocks[1].time }}s
+      <span class="mina-icon icon-200 ml-10">arrow_forward</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #step2>
+  <button (click)="updateStep(1)">to step 1</button>
+  <button (click)="updateStep(3)">to step 3</button>
+  <div class="primary" *ngFor="let n of [].constructor(100)">test data step 2</div>
+</ng-template>
+
+<ng-template #step3>
+  <button (click)="updateStep(2)">to step 2</button>
+  <div class="primary" *ngFor="let n of [].constructor(100)">test data step 3</div>
+</ng-template>

@@ -1,0 +1,43 @@
+@import 'variables';
+
+.mina-table {
+	.c-row {
+		color: $base-secondary;
+
+		.title {
+			color: $base-primary;
+		}
+
+		.details {
+			> div {
+				margin-right: 1px;
+			}
+		}
+
+		.mat-icon {
+			width: 18px;
+			height: 18px;
+		}
+
+		.active {
+			background-color: $selected-container;
+
+			.title {
+				color: $selected-primary;
+			}
+
+			.last-group {
+				color: $selected-primary;
+
+				.primary {
+					color: $selected-secondary !important;
+				}
+			}
+		}
+	}
+
+	.cdk-virtual-scroll-viewport {
+		min-width: 350px;
+		overflow-x: hidden;
+	}
+}
