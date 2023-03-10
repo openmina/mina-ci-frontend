@@ -59,10 +59,15 @@ ARG branch=local
 ARG node_explorer_git="https://github.com/openmina/mina-ci-frontend"
 RUN git clone ${node_explorer_git}
 RUN cd mina-ci-frontend
+WORKDIR /app/mina-ci-frontend
+
+RUN pwd
+RUN ls -l
+RUN git status
 RUN git checkout ${branch}
+RUN git pull
 RUN npm install
 
-WORKDIR /app/mina-ci-frontend
 RUN node_modules/.bin/ng build --configuration production
 RUN npm prune --production
 
