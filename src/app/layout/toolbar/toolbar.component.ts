@@ -9,6 +9,8 @@ import { ManualDetection } from '@shared/base-classes/manual-detection.class';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { DOCUMENT } from '@angular/common';
 import { ThemeType } from '@shared/types/core/theme/theme-types.type';
+import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
+import { ReportingGetReports } from '@reporting/reporting.actions';
 
 @Component({
   selector: 'mina-toolbar',
@@ -17,9 +19,9 @@ import { ThemeType } from '@shared/types/core/theme/theme-types.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex-row align-center border-bottom bg-surface' },
 })
-export class ToolbarComponent extends ManualDetection implements OnInit {
+export class ToolbarComponent extends StoreDispatcher implements OnInit {
 
-  title: string;
+  title: string = 'Reports';
   isMobile: boolean;
   currentTheme: ThemeType;
 
@@ -27,7 +29,6 @@ export class ToolbarComponent extends ManualDetection implements OnInit {
 
   constructor(@Inject(DOCUMENT) private readonly document: Document,
               private router: Router,
-              private store: Store<MinaState>,
               private loadingService: LoadingService) { super(); }
 
   ngOnInit(): void {
@@ -66,12 +67,10 @@ export class ToolbarComponent extends ManualDetection implements OnInit {
   }
 
   private listenToMenuChange(): void {
-    this.store.select(selectAppMenu)
-      .pipe(filter(menu => menu.isMobile !== this.isMobile))
-      .subscribe((menu: AppMenu) => {
-        this.isMobile = menu.isMobile;
-        this.detect();
-      });
+    this.select(selectAppMenu, (menu: AppMenu) => {
+      this.isMobile = menu.isMobile;
+      this.detect();
+    }, filter(menu => menu.isMobile !== this.isMobile));
   }
 
   private listenToTitleChange(): void {
@@ -92,5 +91,9 @@ export class ToolbarComponent extends ManualDetection implements OnInit {
           this.detect();
         }
       });
+  }
+
+  refetchReports(): void {
+    this.dispatch(ReportingGetReports);
   }
 }

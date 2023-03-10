@@ -11,6 +11,30 @@
 		.details {
 			> div {
 				margin-right: 1px;
+
+				&:first-child {
+					width: 64px;
+				}
+
+				&:nth-child(2),
+				&:nth-child(3) {
+					width: 82px;
+				}
+			}
+
+			.last-group div {
+				&:nth-child(1) {
+					width: 67px;
+				}
+
+				&:nth-child(3) {
+					width: 72px;
+				}
+
+				&:nth-child(2),
+				&:nth-child(4) {
+					width: 48px;
+				}
 			}
 		}
 
@@ -19,25 +43,45 @@
 			height: 18px;
 		}
 
-		.active {
-			background-color: $selected-container;
-
-			.title {
-				color: $selected-primary;
+		> div {
+			&:hover:not(.active) {
+				background-color: $base-container;
 			}
 
-			.last-group {
-				color: $selected-primary;
+			&.active {
+				background-color: $selected-container;
 
-				.primary {
-					color: $selected-secondary !important;
+				.title {
+					color: $selected-primary;
+				}
+
+				.last-group {
+					.secondary {
+						color: $selected-primary !important;
+					}
+
+					.tertiary {
+						color: $selected-secondary !important;
+					}
+				}
+
+				.success-secondary {
+					color: $success-primary !important;
+				}
+
+				.warn-secondary {
+					color: $warn-primary !important;
+				}
+
+				::ng-deep mina-reporting-table-graph .histo-bar {
+					background-color: $selected-primary !important;
 				}
 			}
 		}
 	}
 
 	.cdk-virtual-scroll-viewport {
-		min-width: 350px;
+		min-width: 1240px;
 		overflow-x: hidden;
 	}
 }

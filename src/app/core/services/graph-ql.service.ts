@@ -18,7 +18,7 @@ const SKIPPED_GRAPHQL_NAMES: string[] = [
 })
 export class GraphQLService {
 
-  private url: string = CONFIG.backend + '/graphql';
+  private url: string = CONFIG.aggregator + '/graphql';
 
   constructor(private loadingService: LoadingService,
               private http: HttpClient) { }

@@ -10,7 +10,9 @@ import {
 const initialState: ReportingState = {
   reports: [],
   activeReport: undefined,
-  activeReportDetail: undefined,
+  activeReportDetail: {
+    blocks: [],
+  },
   idToShow: undefined,
 };
 

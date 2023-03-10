@@ -57,7 +57,7 @@ const DARK_THEME: Theme = {
       [`${SPECIAL_CSS_PREFIX}overlay`]: 'rgba(0,0,0,0.5)',
       [`${SPECIAL_CSS_PREFIX}selected-alt-1-primary`]: '#927fb9',
       [`${SPECIAL_CSS_PREFIX}selected-alt-1-container`]: 'rgba(146,127,185,0.1)',
-      [`${SPECIAL_CSS_PREFIX}selected-alt-2-secondary`]: '#59bfb5',
+      [`${SPECIAL_CSS_PREFIX}selected-alt-2-primary`]: '#59bfb5',
       [`${SPECIAL_CSS_PREFIX}selected-alt-2-container`]: 'rgba(123,204,196,0.1)',
       [`${SPECIAL_CSS_PREFIX}selected-alt-3-primary`]: '#acdea0',
       [`${SPECIAL_CSS_PREFIX}selected-alt-3-container`]: 'rgba(204,235,197,0.1)',

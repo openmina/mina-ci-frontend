@@ -8,6 +8,8 @@ import { ReportingEffects } from '@reporting/reporting.effects';
 import { ReportingTableComponent } from './reporting-table/reporting-table.component';
 import { ReportingSidePanelComponent } from './reporting-side-panel/reporting-side-panel.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ReportingTooltipPipe } from '@reporting/reporting-table/reporting-table-tooltip.pipe';
+import { ReportingTableGraphComponent } from './reporting-table-graph/reporting-table-graph.component';
 
 
 @NgModule({
@@ -15,6 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
     ReportingComponent,
     ReportingTableComponent,
     ReportingSidePanelComponent,
+    ReportingTooltipPipe,
+    ReportingTableGraphComponent,
   ],
   imports: [
     SharedModule,

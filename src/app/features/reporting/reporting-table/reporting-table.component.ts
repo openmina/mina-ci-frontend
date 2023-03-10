@@ -42,7 +42,7 @@ export class ReportingTableComponent extends StoreDispatcher implements OnInit {
 
   onRowClick(report: Report): void {
     if (report !== this.activeReport) {
-      this.router.navigate([report.id], { queryParamsHandling: 'merge' });
+      this.router.navigate([report.number], { queryParamsHandling: 'merge' });
       this.dispatch(ReportingSetActiveReport, report);
     }
   }

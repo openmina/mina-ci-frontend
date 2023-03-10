@@ -5,8 +5,8 @@
           (click)="closeSidePanel()">close
     </span>
   </div>
-  <div class="side-panel-stepper h-minus-xxl p-relative overflow-hidden">
-    <div class="step step-1 p-absolute w-100 h-100 flex-column" (click)="updateStep(2)"
+  <div class="side-panel-stepper h-minus-xxl p-relative overflow-hidden" *ngIf="activeReport">
+    <div class="step step-1 p-absolute w-100 h-100 flex-column overflow-y-auto"
          [class.before]="activeStep > 1"
          [class.active]="activeStep === 1">
       <ng-container *ngTemplateOutlet="step1"></ng-container>
@@ -28,20 +28,39 @@
 
 <ng-template #step1>
   <div class="h-lg lh-lg f-600 pl-12">Blocks</div>
-  <div class="h-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
+  <div class="h-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12"
+       >
     <span class="tertiary">Total</span>
-    <div class="flex-row align-center">
+    <div class="flex-row align-center" *ngIf="activeReportDetail?.blocks.length; else dash">
       {{ activeReportDetail?.blocks.length }} blocks
       <span class="mina-icon icon-200 ml-10">arrow_forward</span>
     </div>
   </div>
   <div class="h-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
     <span class="tertiary">Slowest Block</span>
-    <div class="flex-row align-center">
-      {{ activeReportDetail?.blocks[1].time }}s
+    <div class="flex-row align-center" *ngIf="slowestBlock?.maxReceiveLatency; else dash">
+      {{ slowestBlock?.maxReceiveLatency | number: '.0-2' }}s
       <span class="mina-icon icon-200 ml-10">arrow_forward</span>
     </div>
   </div>
+  <div class="pl-5 pr-5 pb-12 mb-16">
+    <div class="bg-container pt-12 pb-12 pl-8 mb-16">
+      <div class="f-600 mb-16">Received latency histogram</div>
+      <div [style.height.px]="200">
+        <ng-container #receiveLatenciesGraph></ng-container>
+      </div>
+      <div class="f-600 mb-16 pt-12 mt-16">Block Production histogram</div>
+      <div [style.height.px]="200">
+        <ng-container #blockProductionGraph></ng-container>
+      </div>
+      <div class="f-600 mb-16 pt-12 mt-16">Block Application histogram</div>
+      <div [style.height.px]="200">
+        <ng-container #blockApplicationGraph></ng-container>
+      </div>
+    </div>
+  </div>
+  <div id="my_dataviz" class="w-100"></div>
+  <ng-template #dash>-</ng-template>
 </ng-template>
 
 <ng-template #step2>

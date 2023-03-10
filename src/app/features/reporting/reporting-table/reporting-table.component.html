@@ -1,20 +1,26 @@
 <div class="mina-table overflow-x-auto pt-10 h-100">
-  <cdk-virtual-scroll-viewport class="border-bottom h-100 overflow-y-auto"
+  <cdk-virtual-scroll-viewport class="border-bottom h-100 overflow-y-scroll"
                                [itemSize]="itemSize">
     <div *cdkVirtualFor="let report of reports; let i=index"
          [style.height.px]="itemSize + 10"
-         class="c-row pb-10 pl-10">
+         class="c-row pb-10 pl-10 pr-5">
       <div (click)="onRowClick(report)"
            [class.active]="activeReport === report"
            class="p-10 h-100 flex-row flex-column-lg flex-between border border-rad-8">
         <div class="flex-column flex-around h-100">
-          <span class="title">{{ report.name }}</span>
+          <span class="title">{{ report.message }}</span>
           <span class="tertiary flex-row align-center">
             <span class="mina-icon icon-200">commit</span>
             <span class="ml-5 flex-row align-center">
-              {{ report.commit }} to {{ report.repo }}&nbsp;&nbsp;{{ '18 hours' }} ago · {{ report.timestamp }}&nbsp;
-              <a [href]="report.link" target="_blank" [tooltip]="'Open in Drone'" [showDelay]="300"
-                 class="tertiary text-decoration-underline-hover ml-10 text-capitalize flex-row align-center">
+              <a [href]="'https://github.com/openmina/mina/commit/' + report.commit" target="_blank"
+                 [tooltip]="'Open in GitHub'" [showDelay]="300" (click)="$event.stopPropagation()"
+                 class="tertiary text-decoration-underline-hover">
+                {{ report.commit.substring(0, 7) }}
+              </a>
+              &nbsp;to {{ report.branch }}&nbsp;&nbsp;{{ report.timeAgo }} ago · {{ report.started }} ·&nbsp;
+              <a [href]="'https://ci.openmina.com/openmina/mina/' + report.number" target="_blank"
+                 [tooltip]="'Open in Drone'" [showDelay]="300" (click)="$event.stopPropagation()"
+                 class="tertiary text-decoration-underline-hover text-capitalize flex-row align-center">
                 {{ report.status }}
                 <mat-icon svgIcon="drone" class="ml-5"></mat-icon>
               </a>
@@ -23,36 +29,71 @@
         </div>
         <div class="flex-row">
           <div class="flex-column flex-around bg-container border-rad-4 p-8 mr-8">
-            <span class="primary">Transactions</span>
+            <span class="secondary">Transactions</span>
             <span class="f-600 f-big">{{ report.transactions }}</span>
           </div>
           <div class="details flex-row border-rad-4 overflow-hidden">
-            <div class="bg-container" [tooltip]="report.filled + ' filled'">
+            <div class="bg-container"
+                 [tooltip]="report.canonicalBlockCount + ' canonical blocks, ' + report.blockCount + ' total blocks'">
               <div class="flex-column flex-around bg-container-hover p-8 h-100">
-                <span class="primary">Blocks</span>
-                <span class="f-600 f-big">{{ report.blocks }}</span>
+                <span class="secondary">Blocks</span>
+                <span class="f-600 f-big">{{ report.blockCount }}</span>
               </div>
             </div>
-            <div class="flex-column flex-around bg-container p-8">
-              <span class="primary">Blocks</span>
-              <span class="f-600 f-big">{{ report.blocks }}</span>
+            <div class="flex-column flex-around bg-container p-8"
+                 [tooltip]="report.blockProductionAvg | reportingTooltip: reports[i+1]?.blockProductionAvg">
+              <span class="tertiary">Production</span>
+              <span class="f-600 f-big">
+                <span
+                    [ngClass]="(reports[i+1] && reports[i+1].blockProductionAvg < report.blockProductionAvg ? 'warn' : 'success') + '-secondary'">
+                  {{ report.blockProductionAvg }}s
+                </span>
+                avg
+              </span>
             </div>
-            <div class="flex-column flex-around bg-container p-8">
-              <span class="primary">Blocks</span>
-              <span class="f-600 f-big">{{ report.blocks }}</span>
+            <div class="flex-column flex-around bg-container p-8"
+                 [tooltip]="report.blockApplicationAvg | reportingTooltip: reports[i+1]?.blockApplicationAvg">
+              <span class="tertiary">Application</span>
+              <span class="f-600 f-big">
+                <span
+                    [ngClass]="(reports[i+1] && reports[i+1].blockApplicationAvg < report.blockApplicationAvg ? 'warn' : 'success') + '-secondary'">
+                  {{ report.blockApplicationAvg }}s
+                </span>
+                avg
+              </span>
             </div>
             <div class="last-group flex-row bg-container p-8">
-              <div class="flex-column flex-around mr-16">
-                <span class="primary">Latency</span>
-                <span class="f-600 f-big">{{ report.latencyAvg }}s avg</span>
+              <div class="flex-column flex-around mr-16"
+                   [tooltip]="report.latencyAvg | reportingTooltip: reports[i+1]?.latencyAvg">
+                <span class="secondary">Latency</span>
+                <span class="f-600 f-big">
+                  <span
+                      [ngClass]="(reports[i+1] && reports[i+1].latencyAvg < report.latencyAvg ? 'warn' : 'success') + '-secondary'">
+                    {{ report.latencyAvg }}s
+                  </span>
+                  avg
+                </span>
               </div>
-              <div class="flex-column flex-around mr-10">
-                <span class="primary">Min</span>
-                <span class="f-600 f-big">{{ report.latencyMin }}s</span>
+              <div class="flex-column flex-around mr-10"
+                   [tooltip]="report.latencyMin | reportingTooltip: reports[i+1]?.latencyMin">
+                <span class="tertiary">Min</span>
+                <span class="f-600 f-big"
+                      [ngClass]="(reports[i+1] && reports[i+1].latencyMin < report.latencyMin ? 'warn' : 'success') + '-secondary'">
+                  {{ report.latencyMin }}s
+                </span>
               </div>
-              <div class="flex-column flex-around">
-                <span class="primary">Max</span>
-                <span class="f-600 f-big">{{ report.latencyMax }}s</span>
+              <div class="mr-10 pb-5">
+                <ng-container *ngIf="report.receiveLatencies.length">
+                  <mina-reporting-table-graph [values]="report.receiveLatencies"></mina-reporting-table-graph>
+                </ng-container>
+              </div>
+              <div class="flex-column flex-around"
+                   [tooltip]="report.latencyMax | reportingTooltip: reports[i+1]?.latencyMax">
+                <span class="tertiary">Max</span>
+                <span class="f-600 f-big"
+                      [ngClass]="(reports[i+1] && reports[i+1].latencyMax < report.latencyMax ? 'warn' : 'success') + '-secondary'">
+                  {{ report.latencyMax }}s
+                </span>
               </div>
             </div>
           </div>

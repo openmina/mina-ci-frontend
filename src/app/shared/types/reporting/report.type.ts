@@ -1,16 +1,24 @@
 export interface Report {
-  id : number;
-  name : string;
+  number: number;
+  message: string;
   commit: string;
-  repo: string;
-  timestamp: number;
+  branch: string;
+  started: string;
+  timeAgo: string;
   status: 'passed' | 'failed' | 'pending';
   transactions: number;
-  height : number;
-  filled: number;
-  blocks: number;
+  blockCount: number;
+  canonicalBlockCount: number;
+  blockProductionMin: number;
+  blockProductionAvg: number;
+  blockProductionMax: number;
+  blockApplicationMin: number;
+  blockApplicationAvg: number;
+  blockApplicationMax: number;
+  latencyMin: number;
   latencyAvg: number;
   latencyMax: number;
-  latencyMin: number;
-  link: string;
+  applicationTimes: number[];
+  productionTimes: number[];
+  receiveLatencies: number[];
 }

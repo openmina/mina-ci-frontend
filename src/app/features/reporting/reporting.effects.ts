@@ -45,7 +45,7 @@ export class ReportingEffects extends MinaBaseEffect<ReportingActions> {
             switchMap(([reports, idToShow]) => {
               let actions: ReportingActions[] = [{ type: REPORTING_GET_REPORTS_SUCCESS, payload: reports }];
               if (idToShow) {
-                const reportToShow = reports.find(report => report.id === idToShow);
+                const reportToShow = reports.find(report => report.number === idToShow);
                 if (reportToShow) {
                   actions.push({ type: REPORTING_SET_ACTIVE_REPORT, payload: reportToShow });
                 }
@@ -67,7 +67,7 @@ export class ReportingEffects extends MinaBaseEffect<ReportingActions> {
       switchMap(({ action }) =>
         action.type === REPORTING_CLOSE || action.payload === undefined
           ? EMPTY
-          : this.reportingService.getReportDetail(action.payload.id),
+          : this.reportingService.getReportDetail(action.payload.number),
       ),
       map((payload: ReportDetail) => ({ type: REPORTING_GET_REPORT_DETAIL_SUCCESS, payload })),
       catchError((error: Error) => [

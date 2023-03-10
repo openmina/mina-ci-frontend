@@ -1,8 +1,13 @@
+import { ReportDetailBlockPeerTiming } from '@shared/types/reporting/report-detail-block-peer-timing.type';
+
 export interface ReportDetailBlock {
-  slot: number;
-  time: number;
-  tx: number;
-  snarks: number;
-  maxLatency: number;
-  hash: string;
+  height: number;
+  blockHash: string;
+  globalSlot: number;
+  transactions: number;
+  maxReceiveLatency: number;
+  datetime: string;
+  blockProducer: string;
+  blockProducerNodes: string[];
+  peerTimings: ReportDetailBlockPeerTiming[];
 }
