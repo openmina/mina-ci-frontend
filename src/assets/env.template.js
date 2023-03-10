@@ -1,7 +1,7 @@
 (function (window) {
   window['env'] = window['env'] || {};
 
-  const aggregator = JSON.parse('${AGGREGATOR_URL}');
+  const aggregator = '${AGGREGATOR_URL}';
 
   window['env']['aggregator'] = aggregator || '';
 

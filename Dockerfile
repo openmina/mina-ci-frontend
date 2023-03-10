@@ -1,7 +1,6 @@
 
 FROM node:18 AS BUILD_IMAGE
 WORKDIR /app
-RUN npm install -g @angular/cli
 
 ARG branch=local
 ARG node_explorer_git="https://github.com/openmina/mina-ci-frontend"
