@@ -54,6 +54,10 @@
 	width: 36px !important;
 }
 
+.lh-xs {
+	line-height: 20px;
+}
+
 .lh-sm {
 	line-height: 24px;
 }
@@ -68,6 +72,10 @@
 
 .lh-xl {
 	line-height: 40px;
+}
+
+@mixin lh-xs() {
+	@extend .lh-xs;
 }
 
 @mixin h-sm() {
@@ -101,6 +109,10 @@
 
 	.h-md {
 		height: 36px !important;
+	}
+
+	.lh-xs {
+		line-height: 24px !important;
 	}
 
 	.lh-md {

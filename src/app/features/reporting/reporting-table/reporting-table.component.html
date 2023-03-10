@@ -5,7 +5,7 @@
          [style.height.px]="itemSize + 10"
          class="c-row pb-10 pl-10 pr-5">
       <div (click)="onRowClick(report)"
-           [class.active]="activeReport === report"
+           [class.active]="activeReport?.number === report.number"
            class="p-10 h-100 flex-row flex-column-lg flex-between border border-rad-8">
         <div class="flex-column flex-around h-100">
           <span class="title">{{ report.message }}</span>
@@ -28,42 +28,46 @@
           </span>
         </div>
         <div class="flex-row">
-          <div class="flex-column flex-around bg-container border-rad-4 p-8 mr-8">
-            <span class="secondary">Transactions</span>
+          <div class="flex-column flex-around bg-container border-rad-4 p-8 mr-8 secondary">
+            Transactions
             <span class="f-600 f-big">{{ report.transactions }}</span>
           </div>
           <div class="details flex-row border-rad-4 overflow-hidden">
             <div class="bg-container"
                  [tooltip]="report.canonicalBlockCount + ' canonical blocks, ' + report.blockCount + ' total blocks'">
-              <div class="flex-column flex-around bg-container-hover p-8 h-100">
-                <span class="secondary">Blocks</span>
+              <div class="flex-column flex-around bg-container-hover p-8 h-100 secondary">
+                Blocks
                 <span class="f-600 f-big">{{ report.blockCount }}</span>
               </div>
             </div>
-            <div class="flex-column flex-around bg-container p-8"
+            <div class="flex-column flex-around bg-container"
                  [tooltip]="report.blockProductionAvg | reportingTooltip: reports[i+1]?.blockProductionAvg">
-              <span class="tertiary">Production</span>
-              <span class="f-600 f-big">
-                <span
-                    [ngClass]="(reports[i+1] && reports[i+1].blockProductionAvg < report.blockProductionAvg ? 'warn' : 'success') + '-secondary'">
-                  {{ report.blockProductionAvg }}s
+              <div class="bg-container-hover p-8">
+                <span class="tertiary">Production</span>
+                <span class="f-600 f-big">
+                  <span
+                      [ngClass]="(reports[i+1] && reports[i+1].blockProductionAvg < report.blockProductionAvg ? 'warn' : 'success') + '-secondary'">
+                    {{ report.blockProductionAvg }}s
+                  </span>
+                  avg
                 </span>
-                avg
-              </span>
+              </div>
             </div>
-            <div class="flex-column flex-around bg-container p-8"
+            <div class="flex-column flex-around bg-container"
                  [tooltip]="report.blockApplicationAvg | reportingTooltip: reports[i+1]?.blockApplicationAvg">
-              <span class="tertiary">Application</span>
-              <span class="f-600 f-big">
-                <span
-                    [ngClass]="(reports[i+1] && reports[i+1].blockApplicationAvg < report.blockApplicationAvg ? 'warn' : 'success') + '-secondary'">
-                  {{ report.blockApplicationAvg }}s
+              <div class="bg-container-hover p-8">
+                <span class="tertiary">Application</span>
+                <span class="f-600 f-big">
+                  <span
+                      [ngClass]="(reports[i+1] && reports[i+1].blockApplicationAvg < report.blockApplicationAvg ? 'warn' : 'success') + '-secondary'">
+                    {{ report.blockApplicationAvg }}s
+                  </span>
+                  avg
                 </span>
-                avg
-              </span>
+              </div>
             </div>
-            <div class="last-group flex-row bg-container p-8">
-              <div class="flex-column flex-around mr-16"
+            <div class="last-group flex-row bg-container">
+              <div class="flex-column flex-around bg-container-hover p-8 pr-0"
                    [tooltip]="report.latencyAvg | reportingTooltip: reports[i+1]?.latencyAvg">
                 <span class="secondary">Latency</span>
                 <span class="f-600 f-big">
@@ -74,7 +78,7 @@
                   avg
                 </span>
               </div>
-              <div class="flex-column flex-around mr-10"
+              <div class="flex-column flex-around bg-container-hover p-8 pr-0"
                    [tooltip]="report.latencyMin | reportingTooltip: reports[i+1]?.latencyMin">
                 <span class="tertiary">Min</span>
                 <span class="f-600 f-big"
@@ -82,12 +86,12 @@
                   {{ report.latencyMin }}s
                 </span>
               </div>
-              <div class="mr-10 pb-5">
+              <div class="mr-10 pb-10">
                 <ng-container *ngIf="report.receiveLatencies.length">
                   <mina-reporting-table-graph [values]="report.receiveLatencies"></mina-reporting-table-graph>
                 </ng-container>
               </div>
-              <div class="flex-column flex-around"
+              <div class="flex-column flex-around bg-container-hover p-8 pr-0"
                    [tooltip]="report.latencyMax | reportingTooltip: reports[i+1]?.latencyMax">
                 <span class="tertiary">Max</span>
                 <span class="f-600 f-big"

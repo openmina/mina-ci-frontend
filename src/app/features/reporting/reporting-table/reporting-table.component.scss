@@ -1,8 +1,11 @@
 @import 'variables';
+@import 'dimensions';
 
 .mina-table {
 	.c-row {
 		color: $base-secondary;
+		cursor: context-menu;
+		@include lh-xs();
 
 		.title {
 			color: $base-primary;
@@ -24,7 +27,7 @@
 
 			.last-group div {
 				&:nth-child(1) {
-					width: 67px;
+					width: 75px;
 				}
 
 				&:nth-child(3) {
@@ -55,14 +58,8 @@
 					color: $selected-primary;
 				}
 
-				.last-group {
-					.secondary {
-						color: $selected-primary !important;
-					}
-
-					.tertiary {
-						color: $selected-secondary !important;
-					}
+				.secondary {
+					color: $selected-primary !important;
 				}
 
 				.success-secondary {
