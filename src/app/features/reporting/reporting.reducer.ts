@@ -51,7 +51,10 @@ export function reducer(state: ReportingState = initialState, action: ReportingA
     case REPORTING_GET_REPORT_DETAIL_SUCCESS: {
       return {
         ...state,
-        activeReportDetail: action.payload,
+        activeReportDetail: {
+          ...action.payload,
+          blocks: sortBlocks(action.payload.blocks, state.sort),
+        },
       };
     }
 
