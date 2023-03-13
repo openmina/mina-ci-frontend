@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "docker-build": "docker build --no-cache -t directcuteo/mina-ci-frontend:reports8 . && docker push directcuteo/mina-ci-frontend:reports8"
+    "docker-build": "docker build --no-cache -t directcuteo/mina-ci-frontend:reports9 . && docker push directcuteo/mina-ci-frontend:reports9"
   },
   "private": true,
   "dependencies": {
