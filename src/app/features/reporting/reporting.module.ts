@@ -10,6 +10,8 @@ import { ReportingSidePanelComponent } from './reporting-side-panel/reporting-si
 import { MatIconModule } from '@angular/material/icon';
 import { ReportingTooltipPipe } from '@reporting/reporting-table/reporting-table-tooltip.pipe';
 import { ReportingTableGraphComponent } from './reporting-table-graph/reporting-table-graph.component';
+import { ReportingSidePanelBlockListComponent } from './reporting-side-panel-block-list/reporting-side-panel-block-list.component';
+import { ReportingSidePanelActiveBlockComponent } from './reporting-side-panel-active-block/reporting-side-panel-active-block.component';
 
 
 @NgModule({
@@ -19,6 +21,8 @@ import { ReportingTableGraphComponent } from './reporting-table-graph/reporting-
     ReportingSidePanelComponent,
     ReportingTooltipPipe,
     ReportingTableGraphComponent,
+    ReportingSidePanelBlockListComponent,
+    ReportingSidePanelActiveBlockComponent,
   ],
   imports: [
     SharedModule,

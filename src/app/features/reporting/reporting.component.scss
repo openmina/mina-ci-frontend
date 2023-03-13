@@ -2,7 +2,7 @@ mina-reporting-table {
 	transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1);
 
 	&.shrink {
-		width: calc(100% - 420px);
+		width: calc(100% - 500px);
 	}
 
 	&:not(.shrink) {
@@ -11,10 +11,10 @@ mina-reporting-table {
 }
 
 mina-horizontal-resizable-container {
-	width: 420px;
+	width: 500px;
 	height: 100%;
 	position: absolute;
-	right: -420px;
+	right: -500px;
 	transition: right 400ms cubic-bezier(0.22, 1, 0.36, 1);
 
 	&.show {

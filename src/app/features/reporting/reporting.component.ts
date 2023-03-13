@@ -3,7 +3,7 @@ import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { ReportingClose, ReportingGetReports, ReportingMarkReportToShow, ReportingSetActiveReport } from '@reporting/reporting.actions';
 import { ReportingTableComponent } from '@reporting/reporting-table/reporting-table.component';
 import { HorizontalResizableContainerComponent } from '@shared/components/horizontal-resizable-container/horizontal-resizable-container.component';
-import { selectActiveReport } from '@reporting/reporting.state';
+import { selectReportingActiveReport } from '@reporting/reporting.state';
 import { Report } from '@shared/types/reporting/report.type';
 import { getMergedRoute } from '@shared/router/router-state.selectors';
 import { MergedRoute } from '@shared/router/merged-route';
@@ -40,7 +40,7 @@ export class ReportingComponent extends StoreDispatcher implements OnInit, OnDes
   }
 
   private listenToActiveRowChange(): void {
-    this.select(selectActiveReport, (row: Report) => {
+    this.select(selectReportingActiveReport, (row: Report) => {
       if (row && !this.isActiveRow) {
         this.isActiveRow = true;
         if (!this.removedClass) {

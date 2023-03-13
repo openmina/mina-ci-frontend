@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { Router } from '@angular/router';
-import { selectActiveReport, selectReports } from '@reporting/reporting.state';
+import { selectReportingActiveReport, selectReports } from '@reporting/reporting.state';
 import { Report } from '@shared/types/reporting/report.type';
 import { ReportingSetActiveReport } from '@reporting/reporting.actions';
 
@@ -27,7 +27,7 @@ export class ReportingTableComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToActiveRowChange(): void {
-    this.select(selectActiveReport, (report: Report) => {
+    this.select(selectReportingActiveReport, (report: Report) => {
       this.activeReport = report;
       this.detect();
     });

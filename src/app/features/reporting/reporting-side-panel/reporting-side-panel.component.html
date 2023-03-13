@@ -11,13 +11,13 @@
          [class.active]="activeStep === 1">
       <ng-container *ngTemplateOutlet="step1"></ng-container>
     </div>
-    <div class="step step-2 p-absolute w-100 h-100 overflow-y-scroll flex-column"
+    <div class="step step-2 p-absolute w-100 h-100 flex-column"
          [class.before]="activeStep > 2"
          [class.after]="activeStep < 2"
          [class.active]="activeStep === 2">
       <ng-container *ngTemplateOutlet="step2"></ng-container>
     </div>
-    <div class="step step-3 p-absolute w-100 h-100 overflow-y-scroll flex-column"
+    <div class="step step-3 p-absolute w-100 h-100 flex-column"
          [class.after]="activeStep < 3"
          [class.active]="activeStep === 3">
       <ng-container *ngTemplateOutlet="step3"></ng-container>
@@ -28,14 +28,16 @@
 
 <ng-template #step1>
   <div class="lh-lg f-600 pl-12">Blocks</div>
-  <div class="lh-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
+  <div class="lh-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12"
+       (click)="updateStep(2)">
     <span class="tertiary">Total</span>
     <div class="flex-row align-center" *ngIf="activeReportDetail?.blocks.length; else dash">
       {{ activeReportDetail?.blocks.length }} blocks
       <span class="mina-icon icon-200 ml-10">arrow_forward</span>
     </div>
   </div>
-  <div class="lh-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12">
+  <div class="lh-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12"
+       (click)="goToSlowest()">
     <span class="tertiary">Slowest Block</span>
     <div class="flex-row align-center" *ngIf="slowestBlock?.maxReceiveLatency; else dash">
       {{ slowestBlock?.maxReceiveLatency | number: '.0-2' }}s
@@ -44,15 +46,15 @@
   </div>
   <div class="pl-5 pr-5 pb-12 mb-16 mt-5">
     <div class="bg-container pt-12 pb-12 pl-8 mb-16">
-      <div class="f-600 mb-16">Received latency histogram</div>
+      <div class="f-600 mb-16">Received Latency Histogram</div>
       <div [style.height.px]="200">
         <ng-container #receiveLatenciesGraph></ng-container>
       </div>
-      <div class="f-600 mb-16 pt-12 mt-16">Block Production histogram</div>
+      <div class="f-600 mb-16 pt-12 mt-16">Block Production Histogram</div>
       <div [style.height.px]="200">
         <ng-container #blockProductionGraph></ng-container>
       </div>
-      <div class="f-600 mb-16 pt-12 mt-16">Block Application histogram</div>
+      <div class="f-600 mb-16 pt-12 mt-16">Block Application Histogram</div>
       <div [style.height.px]="200">
         <ng-container #blockApplicationGraph></ng-container>
       </div>
@@ -62,14 +64,18 @@
 </ng-template>
 
 <ng-template #step2>
-  <button (click)="updateStep(1)">to step 1</button>
-  <button (click)="updateStep(3)">to step 3</button>
-  <div class="primary" *ngFor="let n of [].constructor(100)">test data step 2</div>
+  <div class="flex-row align-center h-lg">
+    <div class="h-100 pl-12 tertiary primary-hover mr-10 flex-row align-center pointer"
+         (click)="updateStep(1)">
+      <span class="mina-icon icon-200">arrow_back</span>
+    </div>
+    <span class="primary f-600">{{ activeReportDetail?.blocks.length }} Blocks</span>
+  </div>
+  <mina-reporting-side-panel-block-list (closeStep2)="updateStep(3)"></mina-reporting-side-panel-block-list>
 </ng-template>
 
 <ng-template #step3>
-  <button (click)="updateStep(2)">to step 2</button>
-  <div class="primary" *ngFor="let n of [].constructor(100)">test data step 3</div>
+  <mina-reporting-side-panel-active-block (closeStep3)="updateStep(2)"></mina-reporting-side-panel-active-block>
 </ng-template>
 
 <ng-template #dash>-</ng-template>

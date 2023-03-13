@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Report } from '@shared/types/reporting/report.type';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { selectActiveReport, selectActiveReportDetail } from '@reporting/reporting.state';
-import { ReportingSetActiveReport } from '@reporting/reporting.actions';
+import { selectReportingActiveReport, selectReportingActiveReportDetail } from '@reporting/reporting.state';
+import { ReportingSelectBlock, ReportingSetActiveReport } from '@reporting/reporting.actions';
 import { ReportDetail } from '@shared/types/reporting/report-detail.type';
 import * as d3 from 'd3';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
 
   activeReport: Report;
   activeReportDetail: ReportDetail;
-  activeStep: number = 1;
+  activeStep: number =1;
   slowestBlock: ReportDetailBlock;
 
   @ViewChild('receiveLatenciesGraph', { read: ViewContainerRef })
@@ -30,19 +30,26 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
   private blockProductionGraphRef: ViewContainerRef;
   @ViewChild('blockApplicationGraph', { read: ViewContainerRef })
   private blockApplicationGraphRef: ViewContainerRef;
+
   private receiveLatenciesGraph: BarGraphComponent;
   private blockProductionGraph: BarGraphComponent;
   private blockApplicationGraph: BarGraphComponent;
 
-  constructor(private router: Router) {super();}
+  constructor(private router: Router) { super(); }
+
+  ngOnInit(): void {
+    // setTimeout(() => {
+    //   this.buildGraph();
+    // }, 100);
+  }
 
   ngAfterViewInit(): void {
-    this.getActiveReport();
+    this.listenToActiveReport();
     this.getActiveReportDetail();
   }
 
-  private async initGraphComponents() {
-    await import('@shared/components/bar-graph/bar-graph.component').then(c => {
+  private async initGraphComponents(): Promise<void> {
+    return await import('@shared/components/bar-graph/bar-graph.component').then(c => {
       this.receiveLatenciesGraph = this.receiveLatenciesGraphRef.createComponent<BarGraphComponent>(c.BarGraphComponent).instance;
       this.receiveLatenciesGraph.xStep = 0.1;
       this.receiveLatenciesGraph.xTicksLength = 50;
@@ -81,14 +88,8 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
     });
   }
 
-  ngOnInit(): void {
-    // setTimeout(() => {
-    //   this.buildGraph();
-    // }, 100);
-  }
-
-  private getActiveReport(): void {
-    this.select(selectActiveReport, async (report: Report) => {
+  private listenToActiveReport(): void {
+    this.select(selectReportingActiveReport, async (report: Report) => {
       this.activeReport = report;
       this.detect();
 
@@ -110,7 +111,7 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
   }
 
   private getActiveReportDetail(): void {
-    this.select(selectActiveReportDetail, (detail: ReportDetail) => {
+    this.select(selectReportingActiveReportDetail, (detail: ReportDetail) => {
       this.activeReportDetail = detail;
       const maxTime = Math.max(...detail.blocks.map(block => block.maxReceiveLatency));
       this.slowestBlock = detail.blocks.find(block => block.maxReceiveLatency === maxTime);
@@ -201,6 +202,11 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
           return result;
         });
     });
+  }
+
+  goToSlowest(): void {
+    this.dispatch(ReportingSelectBlock, this.slowestBlock);
+    this.updateStep(3);
   }
 }
 

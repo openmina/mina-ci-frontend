@@ -9,5 +9,6 @@ export interface ReportDetailBlock {
   datetime: string;
   blockProducer: string;
   blockProducerNodes: string[];
+  blockProducerNodesLength: number;
   peerTimings: ReportDetailBlockPeerTiming[];
 }

@@ -69,6 +69,7 @@ export class ReportingService {
         datetime: toReadableDate(block.date_time * ONE_THOUSAND, 'HH:mm:ss, dd MMM yy'),
         blockProducer: block.block_producer,
         blockProducerNodes: block.block_producer_nodes,
+        blockProducerNodesLength: block.block_producer_nodes.length,
         peerTimings: block.peer_timings.map(peerTiming => ({
           node: peerTiming.node,
           receiveLatency: peerTiming.receive_latency,
@@ -134,8 +135,7 @@ interface ReportResponse {
   receive_latencies: number[];
 }
 
-
-export interface ReportDetailResponse {
+interface ReportDetailResponse {
   height: number;
   block_hash: string;
   global_slot: string;
