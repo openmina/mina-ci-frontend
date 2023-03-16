@@ -1,5 +1,18 @@
 @use '@angular/material' as mat;
 
+//$custom-typography: mat.define-typography-config();
+//@include mat.core();
+
+$theme: mat.define-light-theme((
+	typography: mat.define-typography-config(
+		$font-family: '"Inter", sans-serif'
+	),
+));
+
+@include mat.core();
+@include mat.all-component-themes($theme);
+
+
 @import 'utilities/variables';
 @import 'utilities/layout';
 @import 'utilities/design';
@@ -16,9 +29,6 @@
 @import 'material/material-accordion';
 @import 'material/material-icons';
 @import 'material/material-popups';
-
-$custom-typography: mat.define-typography-config($font-family: '"Inter", sans-serif');
-@include mat.core($custom-typography);
 
 html, body {
 	height: 100%;

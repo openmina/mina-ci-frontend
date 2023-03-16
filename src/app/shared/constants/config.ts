@@ -3,7 +3,7 @@ import { environment } from '@environment/environment';
 
 export const CONFIG: Readonly<MinaEnv> = {
   ...environment,
-  backend: getURL(environment.backend),
+  aggregator: getURL(environment.aggregator),
 };
 
 export function getURL(pathOrUrl: string): string {

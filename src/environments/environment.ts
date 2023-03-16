@@ -2,5 +2,5 @@ import { MinaEnv } from '@shared/types/core/environment/mina-env.type';
 
 export const environment: Readonly<MinaEnv> = {
   production: false,
-  backend: 'http://localhost:3000',
+  aggregator: 'http://1.k8.openmina.com:31356/aggregator',
 };

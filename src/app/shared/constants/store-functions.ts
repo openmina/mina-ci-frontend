@@ -7,7 +7,6 @@ import { ADD_ERROR, ErrorAdd } from '@error-preview/error-preview.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinaErrorType } from '@shared/types/error-preview/mina-error-type.enum';
 import { toReadableDate } from '@shared/helpers/date.helper';
-import * as Sentry from '@sentry/angular';
 
 export const createNonDispatchableEffect = (source: () => any) => createEffect(source, { dispatch: false });
 
@@ -18,7 +17,6 @@ export const selectActionAndState = <S, A>(store: Store<S>, selector: Selector<S
   );
 
 export const addError = (error: HttpErrorResponse | Error, type: MinaErrorType): ErrorAdd => {
-  Sentry.captureException(error, { tags: { type } });
   console.error(error);
   return {
     type: ADD_ERROR,

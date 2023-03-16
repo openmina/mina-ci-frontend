@@ -1,0 +1,38 @@
+@import 'variables';
+@import 'layout';
+
+.tab-group {
+	@include flexRowVertCenter();
+
+	.tab {
+		min-width: 90px;
+		width: 50%;
+		text-align: center;
+		border-radius: 6px;
+		color: $base-secondary;
+		transition: 0.2s;
+		background-color: transparent;
+
+		&.selected {
+			background-color: $selected-container;
+			color: $selected-primary;
+		}
+
+		&:hover:not(.selected) {
+			background-color: $base-container;
+		}
+	}
+}
+
+
+.mina-table {
+	.row {
+		grid-template-columns: 100px 155px 155px;
+		color: $base-tertiary;
+	}
+
+	.cdk-virtual-scroll-viewport {
+		min-width: 100px + 155px + 155px;
+		overflow-x: hidden;
+	}
+}
