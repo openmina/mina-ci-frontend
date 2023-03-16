@@ -20,7 +20,6 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { getXTicks, niceYScale } from '@shared/helpers/graph.helper';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ManualDetection } from '@shared/base-classes/manual-detection.class';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 
 class ChartColumn {
@@ -28,29 +27,37 @@ class ChartColumn {
   value: number;
   range: string;
   step: number;
+  height: number;
 }
 
 @UntilDestroy()
 @Component({
   standalone: true,
   selector: 'mina-bar-graph',
-  imports: [CommonModule, FlexLayoutModule],
+  imports: [CommonModule],
   templateUrl: './bar-graph.component.html',
   styleUrls: ['./bar-graph.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 mt-10 pt-12 flex-column' },
+  host: { class: 'h-100 flex-column' },
 })
-export class BarGraphComponent extends ManualDetection implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class BarGraphComponent extends ManualDetection implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() values: number[] = [];
-  @Input() xStep: number;
-  @Input() yAxisValues: number[] = [];
-  @Input() xTicksLength: number = 20;
-  @Input() yTicksLength: number = 10;
-  @Input() um: string;
-  @Input() yAxisLabel: string;
-  @Input() decimals: number = 1;
-  @Input() responsive: boolean = true;
+  //inputs
+  values: number[] = [];
+  xStep: number;
+  yAxisValues: number[] = [];
+  xTicksLength: number = 20;
+  yTicksLength: number = 10;
+  um: string;
+  yAxisLabel: string;
+  decimals: number = 1;
+  responsive: boolean = true;
+  showYTicks: boolean = true;
+  showXTicks: boolean = true;
+  color: string = 'var(--base-secondary)';
+  xTicksSkipper: number = 1;
+  domainValues: number[];
+  //inputs
 
   chartColumns: ChartColumn[];
   ticks: Observable<string[]>;
@@ -80,17 +87,17 @@ export class BarGraphComponent extends ManualDetection implements OnInit, AfterV
   }
 
   ngAfterViewInit(): void {
-    this.maxHeight = this.columnContainer.nativeElement.offsetHeight;
+    this.maxHeight = this.maxHeight || this.columnContainer.nativeElement.offsetHeight;
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.bars && changes['values']?.currentValue !== changes['values']?.previousValue) {
-      this.update();
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (this.bars && changes['values']?.currentValue !== changes['values']?.previousValue) {
+  //     this.update();
+  //   }
+  // }
 
   private initChartColumns(): ChartColumn[] {
-    const map = new Map<number, { value: number, range: string }>();
+    const map = new Map<string, { value: number, range: string }>();
 
     this.bars.forEach((curr: number, i: number) => {
       const value = {
@@ -99,7 +106,7 @@ export class BarGraphComponent extends ManualDetection implements OnInit, AfterV
           ? `> ${curr.toFixed(this.decimals)}${this.um}`
           : `${curr.toFixed(this.decimals)}${this.um} - ${(curr + this.internalXStep).toFixed(this.decimals)}${this.um}`,
       };
-      map.set(curr, value);
+      map.set(curr.toFixed(this.decimals), value);
     });
 
     const chartColumns = [];
@@ -121,7 +128,10 @@ export class BarGraphComponent extends ManualDetection implements OnInit, AfterV
       column.value++;
     });
     this.yAxisValues = this.yTicks;
-    this.maxHeight = this.columnContainer?.nativeElement.offsetHeight;
+    this.maxHeight = this.maxHeight || this.columnContainer?.nativeElement.offsetHeight;
+    this.chartColumns.forEach(column => {
+      column.height = this.maxHeight * column.value / this.yAxisValues[0] || 0;
+    });
   }
 
   private get xTicks(): string[] {
@@ -213,7 +223,7 @@ export class BarGraphComponent extends ManualDetection implements OnInit, AfterV
   }
 
   private get yTicks(): number[] {
-    const numbers = this.chartColumns.map(c => c.value);
+    const numbers = this.domainValues || this.chartColumns.map(c => c.value);
     const max = Math.max(...numbers);
     const min = Math.min(...numbers);
     const [ySpacing, yMaxTick] = niceYScale(min, max, this.yTicksLength);

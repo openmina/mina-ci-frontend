@@ -7,6 +7,6 @@ import { CONFIG } from '@shared/constants/config';
 export class ConfigService {
 
   get API(): string {
-    return CONFIG.backend;
+    return CONFIG.aggregator;
   }
 }
