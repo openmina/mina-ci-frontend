@@ -22,7 +22,6 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
   activeReport: Report;
   activeReportDetail: ReportDetail;
   activeStep: number = 1;
-  slowestBlock: ReportDetailBlock;
 
   @ViewChild('receiveLatenciesGraph', { read: ViewContainerRef })
   private receiveLatenciesGraphRef: ViewContainerRef;
@@ -127,7 +126,6 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
     this.select(selectReportingActiveReportDetail, (detail: ReportDetail) => {
       this.activeReportDetail = detail;
       const maxTime = Math.max(...detail.blocks.map(block => block.maxReceiveLatency));
-      this.slowestBlock = detail.blocks.find(block => block.maxReceiveLatency === maxTime);
       this.detect();
     });
   }
@@ -139,10 +137,5 @@ export class ReportingSidePanelComponent extends StoreDispatcher implements OnIn
 
   updateStep(step: number): void {
     this.activeStep = step;
-  }
-
-  goToSlowest(): void {
-    this.dispatch(ReportingSelectBlock, this.slowestBlock);
-    this.updateStep(3);
   }
 }

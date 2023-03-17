@@ -6,7 +6,7 @@ import { SecDurationConfig } from '@shared/pipes/sec-duration.pipe';
 import { TableHeadSorting } from '@shared/types/shared/table-head-sorting.type';
 import { ReportDetailBlockPeerTiming } from '@shared/types/reporting/report-detail-block-peer-timing.type';
 import { SortDirection, TableSort } from '@shared/types/shared/table-sort.type';
-import { ReportingBlocksSort, ReportingPeersSort } from '@reporting/reporting.actions';
+import { ReportingPeersSort } from '@reporting/reporting.actions';
 
 @Component({
   selector: 'mina-reporting-side-panel-active-block',
@@ -21,7 +21,7 @@ export class ReportingSidePanelActiveBlockComponent extends StoreDispatcher impl
   readonly tableHeads: TableHeadSorting<ReportDetailBlockPeerTiming>[] = [
     { name: 'node' },
     { name: 'block processing', sort: 'blockProcessingTime' },
-    { name: 'receive latency', sort: 'receiveLatency' },
+    { name: 'block broadcast', sort: 'receiveLatency' },
   ];
 
   @Output() closeStep3: EventEmitter<void> = new EventEmitter<void>();
@@ -29,10 +29,6 @@ export class ReportingSidePanelActiveBlockComponent extends StoreDispatcher impl
   block: ReportDetailBlock;
   selectedTabIndex: number = 0;
   currentSort: TableSort<ReportDetailBlockPeerTiming>;
-
-  constructor() {
-    super();
-  }
 
   ngOnInit(): void {
     this.listenToActiveBlockChange();
