@@ -75,7 +75,7 @@ export class ReportingService {
         receiveLatencyMaxDelta: parseFloat(report.receive_latency_max_delta.toFixed(1)),
         receiveLatencyMinDelta: parseFloat(report.receive_latency_min_delta.toFixed(1)),
 
-        isRegression: report.block_production_regression || report.block_application_regression || report.receive_latency_regression,
+        isRegression: !report.block_production_regression || !report.block_application_regression || !report.receive_latency_regression,
       });
     });
   }

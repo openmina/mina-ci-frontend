@@ -36,14 +36,6 @@
       <span class="mina-icon icon-200 ml-10">arrow_forward</span>
     </div>
   </div>
-  <div class="lh-lg flex-row flex-between align-center bg-container-hover pointer tertiary primary-hover pr-12 pl-12"
-       (click)="goToSlowest()">
-    <span class="tertiary">Slowest Block</span>
-    <div class="flex-row align-center" *ngIf="slowestBlock?.maxReceiveLatency; else dash">
-      {{ slowestBlock?.maxReceiveLatency | number: '.0-2' }}s
-      <span class="mina-icon icon-200 ml-10">arrow_forward</span>
-    </div>
-  </div>
   <div class="pl-5 pr-5 pb-12 mb-16 mt-5">
     <div class="bg-container pt-12 pb-12 pl-8 mb-16">
       <div class="f-600 mb-16">Block Production Histogram</div>

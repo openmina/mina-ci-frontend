@@ -30,7 +30,7 @@ const initialState: ReportingState = {
   },
   activeFilters: ['success'],
   graphConfig: undefined,
-  delta: true,
+  delta: false,
 };
 
 export function reducer(state: ReportingState = initialState, action: ReportingActions): ReportingState {
