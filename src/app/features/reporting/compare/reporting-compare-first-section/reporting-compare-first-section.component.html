@@ -1,0 +1,136 @@
+<ng-container *ngTemplateOutlet="build; context: { build: first, name: 'first' }"></ng-container>
+<div *ngIf="first" class="regression-status fx-row-vert-cent mb-10">
+  <ng-container *ngIf="first.status === 'success'; else ignored">
+    <ng-container *ngIf="first.isRegression; else passed">
+      <span class="mina-icon f-20 mr-10 icon-300 aware-primary">error</span>
+      <span class="aware-primary f-600">Regression</span>
+    </ng-container>
+    <ng-template #passed>
+      <span class="mina-icon f-20 mr-10 icon-300 success-primary">task_alt</span>
+      <span class="success-primary f-600">Passed</span>
+    </ng-template>
+  </ng-container>
+  <ng-template #ignored>
+    <span class="mina-icon f-20 mr-10 icon-300 tertiary">hide_source</span>
+    <span class="tertiary f-600">No Verdict</span>
+  </ng-template>
+</div>
+<ng-container *ngTemplateOutlet="build; context: { build: second, name: 'second' }"></ng-container>
+<ng-container *ngIf="first && config">
+  <div class="flex-column border border-rad-6 p-10 mb-10 mt-10">
+    <div class="f-600">Block Production</div>
+    <mina-reporting-graph [maxPointDelta]="config.graphMaxPointProductionDelta"
+                          [minPointDelta]="config.graphMinPointProductionDelta"
+                          [bars]="first.productionTimesDeltaBars"
+                          [delta]="true"></mina-reporting-graph>
+    <div class="flex-row mt-10 flex-stretch">
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5 mr-5"
+            [ngClass]="first.blockProductionAvgDelta <= second.blockProductionAvgDelta ? 'ok' : 'not-ok'">
+        Avg Δ
+        <span class="f-600">{{ first.blockProductionAvgDelta }}s</span>
+      </span>
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5"
+            [ngClass]="first.blockProductionMaxDelta <= second.blockProductionMaxDelta ? 'ok' : 'not-ok'">
+        Max Δ
+        <span class="f-600">{{ first.blockProductionMaxDelta }}s</span>
+      </span>
+    </div>
+  </div>
+  <div class="flex-column border border-rad-6 p-10 mb-10">
+    <div class="f-600">Block Broadcast</div>
+    <mina-reporting-graph [maxPointDelta]="config.graphMaxPointLatencyDelta"
+                          [minPointDelta]="config.graphMinPointLatencyDelta"
+                          [bars]="first.receiveLatenciesDeltaBars"
+                          [delta]="true"></mina-reporting-graph>
+    <div class="flex-row mt-10 flex-stretch">
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5 mr-5"
+            [ngClass]="first.receiveLatencyAvgDelta <= second.receiveLatencyAvgDelta ? 'ok' : 'not-ok'">
+        Avg Δ
+        <span class="f-600">{{ first.receiveLatencyAvgDelta }}s</span>
+      </span>
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5"
+            [ngClass]="first.receiveLatencyMaxDelta <= second.receiveLatencyMaxDelta ? 'ok' : 'not-ok'">
+        Max Δ
+        <span class="f-600">{{ first.receiveLatencyMaxDelta }}s</span>
+      </span>
+    </div>
+  </div>
+  <div class="flex-column border border-rad-6 p-10 mb-10">
+    <div class="f-600">Block Application</div>
+    <mina-reporting-graph [maxPointDelta]="config.graphMaxPointApplicationDelta"
+                          [minPointDelta]="config.graphMinPointApplicationDelta"
+                          [bars]="first.applicationTimesDeltaBars"
+                          [delta]="true"></mina-reporting-graph>
+    <div class="flex-row mt-10 flex-stretch">
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5 mr-5"
+            [ngClass]="first.blockApplicationAvgDelta <= second.blockApplicationAvgDelta ? 'ok' : 'not-ok'">
+        Avg Δ
+        <span class="f-600">{{ first.blockApplicationAvgDelta }}s</span>
+      </span>
+      <span class="flex-1 h-md lh-md border-rad-4 pl-5 pr-5"
+            [ngClass]="first.blockApplicationMaxDelta <= second.blockApplicationMaxDelta ? 'ok' : 'not-ok'">
+        Max Δ
+        <span class="f-600">{{ first.blockApplicationMaxDelta }}s</span>
+      </span>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #build let-build="build" let-name="name">
+  <div *ngIf="build" class="pl-12 flex-column mb-10">
+    <div class="build p-relative p-10 flex-column flex-between border-rad-6 ml-10 bg-success-container"
+         #dropdownTrigger
+         [ngClass]="name">
+      <div class="fx-row-vert-cent flex-between">
+        <a class="title text-decoration-underline-hover f-600 success-primary"
+           [href]="droneUrl + '/' + build.number" target="_blank"
+           [tooltip]="'<div class=&quot;f-600&quot;>Open in Drone:</div><br> ' + '<span class=&quot;text-italic&quot;>' + build.message + '</span>'"
+           [maxWidth]="1000" [cancelFormatting]="true" [placeToLeft]="true"
+           (click)="$event.stopPropagation()">{{ build.message }}</a>
+        <button class="h-sm fx-row-full-cent flex-between btn-primary pr-0"
+                [style.min-width.px]="100"
+                (click)="openDropdown($event, name)">
+          <div class="fx-row-vert-cent success-primary">
+            <span class="lh-sm">Build {{ build.number }}</span>
+            <span class="mina-icon">arrow_drop_down</span>
+          </div>
+        </button>
+      </div>
+      <span class="flex-column success-secondary">
+        <span class="tertiary flex-row align-center flex-wrap mb-5">
+          <span class="mina-icon icon-200 mr-5">commit</span>
+          <a [href]="'https://github.com/openmina/mina/commit/' + build.commit" target="_blank"
+             [tooltip]="'Open in GitHub'"
+             (click)="$event.stopPropagation()"
+             class="text-decoration-underline-hover">
+            {{ build.commit.substring(0, 7) }}
+          </a>
+          <span>&nbsp;to {{ build.branch }}&nbsp;&nbsp;</span>
+        </span>
+        <span>{{ build.timeAgo }} ago · {{ build.started }}</span>
+      </span>
+    </div>
+
+  </div>
+</ng-template>
+
+
+<ng-template #dropdown>
+  <div  [@popupAnimation]="dropdownVisible ? 'visible' : 'hidden'"
+       class="dropdown border-rad-4 popup-box-shadow-weak flex-column border bg-surface overflow-hidden"
+       (clickOutside)="detachOverlay()">
+    <div class="overflow-auto h-100 p-10 bg-container">
+      <div *ngFor="let report of allReports; let i=index"
+           class="dropdown-item fx-row-vert-cent flex-between pointer pl-8 pr-8 border-rad-4 mb-5"
+           [class.active]="(firstOpened ? first.number : second.number) === report.number"
+           [ngClass]="{'opacity-0-5 pointer-none' : (firstOpened ? second.number : first.number) === report.number }"
+           (click)="selectReport(report)">
+        <span class="truncate pr-10">{{ report.message }}</span>
+        <span class="text-capitalize success-secondary">
+          {{ report.status }}</span>
+        <span class="tertiary">{{ report.timeAgo }} ago</span>
+        <span class="text-right">{{ report.number }}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

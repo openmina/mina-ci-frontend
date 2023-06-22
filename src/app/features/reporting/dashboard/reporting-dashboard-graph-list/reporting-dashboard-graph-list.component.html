@@ -1,0 +1,58 @@
+<div class="flex-column align-center mb-10 border border-rad-6 p-10"
+     [class.active]="activeReportType === 'production'">
+  <div class="fx-row-vert-cent flex-center w-100 p-relative">
+    <div class="f-600 mb-16">Block Production</div>
+    <div class="fx-row-ver-cent p-absolute">
+      <button [ngClass]="'btn-' + (isWeekly ? 'selected' : 'primary')" (click)="showWeekly()" class="mr-5">Week</button>
+      <button [ngClass]="'btn-' + (!isWeekly ? 'selected' : 'primary')" (click)="showMonthly()">Month</button>
+    </div>
+  </div>
+  <mina-reporting-dashboard-graph [data]="productionTimes"
+                                  [clickerVisible]="activeReportType === 'production'"
+                                  [preselectValue]="showBarInGraph === 'production'"
+                                  [weekly]="isWeekly"
+                                  [color]="'var(--special-selected-alt-2-primary)'"
+                                  (activePointClick)="setActivePoint($event, 'production')"
+                                  [id]="1"></mina-reporting-dashboard-graph>
+  <div class="fx-row-vert-cent f-600 special-selected-alt-2-primary graph-footer">
+    <span class="mina-icon icon-200 mr-5">circle</span>
+    Maximum
+    <mat-icon svgIcon="circle-dash" class="mr-5 ml-16"></mat-icon>
+    Average
+  </div>
+</div>
+<div class="flex-column align-center mb-10 border border-rad-6 p-10"
+     [class.active]="activeReportType === 'latency'">
+  <div class="f-600 mb-16">Block Broadcast</div>
+  <mina-reporting-dashboard-graph [data]="latencyTimes"
+                                  [clickerVisible]="activeReportType === 'latency'"
+                                  [preselectValue]="showBarInGraph === 'latency'"
+                                  [weekly]="isWeekly"
+                                  [color]="'var(--special-selected-alt-1-primary)'"
+                                  (activePointClick)="setActivePoint($event, 'latency')"
+                                  [id]="2"></mina-reporting-dashboard-graph>
+  <div class="fx-row-vert-cent f-600 special-selected-alt-1-primary graph-footer">
+    <span class="mina-icon icon-200 mr-5">circle</span>
+    Maximum
+    <mat-icon svgIcon="circle-dash" class="mr-5 ml-16"></mat-icon>
+    Average
+  </div>
+</div>
+
+<div class="flex-column align-center mb-10 border border-rad-6 p-10"
+     [class.active]="activeReportType === 'application'">
+  <div class="f-600 mb-16">Block Application</div>
+  <mina-reporting-dashboard-graph [data]="applicationTimes"
+                                  [clickerVisible]="activeReportType === 'application'"
+                                  [preselectValue]="showBarInGraph === 'application'"
+                                  [weekly]="isWeekly"
+                                  [color]="'var(--special-selected-alt-3-primary)'"
+                                  (activePointClick)="setActivePoint($event, 'application')"
+                                  [id]="3"></mina-reporting-dashboard-graph>
+  <div class="fx-row-vert-cent f-600 special-selected-alt-3-primary graph-footer">
+    <span class="mina-icon icon-200 mr-5">circle</span>
+    Maximum
+    <mat-icon svgIcon="circle-dash" class="mr-5 ml-16"></mat-icon>
+    Average
+  </div>
+</div>

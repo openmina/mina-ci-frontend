@@ -1,0 +1,86 @@
+@import 'variables';
+@import 'dimensions';
+
+.mina-table {
+	.c-row {
+		color: $base-secondary;
+		cursor: context-menu;
+		@include lh-xs();
+
+		.c-row-content {
+			display: grid;
+			grid-template-rows: 151px;
+			grid-template-columns: 1fr 1000px;
+
+			.info {
+				min-width: 480px;
+
+				.title {
+					color: $base-primary;
+				}
+			}
+
+			.loading-icon {
+				width: 20px;
+				height: 20px;
+				animation: rotate 1s linear infinite;
+				@keyframes rotate {
+					to {
+						transform: rotate(360deg);
+					}
+				}
+			}
+
+			&:hover:not(.active) {
+				background-color: $base-container;
+			}
+
+			&.active {
+				background-color: $selected-container;
+
+				.secondary, .title {
+					color: $selected-primary !important;
+				}
+
+				.success-secondary {
+					color: $success-primary !important;
+				}
+
+				.warn-secondary {
+					color: $warn-primary !important;
+				}
+
+				.aware-secondary {
+					color: $aware-primary !important;
+				}
+			}
+		}
+
+		.graphs .bg-container {
+			width: 330px;
+
+			.ok {
+				background-color: $success-container;
+				color: $success-secondary;
+
+				> span {
+					color: $success-primary;
+				}
+			}
+
+			.not-ok {
+				background-color: $warn-container;
+				color: $warn-secondary;
+
+				> span {
+					color: $warn-primary;
+				}
+			}
+		}
+	}
+
+	.cdk-virtual-scroll-viewport {
+		min-width: 1490px;
+		overflow-x: hidden;
+	}
+}

@@ -1,0 +1,139 @@
+@import 'variables';
+
+.regression-status .mina-icon {
+	margin-left: -5px;
+}
+
+.build {
+	&.first,
+	&.second {
+		&::after, &::before {
+			content: '';
+			position: absolute;
+			left: -18px;
+			background: $base-tertiary;
+		}
+
+		&.bg-success-container {
+			&::after, &::before {
+				background: $success-primary;
+			}
+		}
+
+		&.bg-warn-container {
+			&::after, &::before {
+				background: $warn-primary;
+			}
+		}
+
+		&.bg-aware-container {
+			&::after, &::before {
+				background: $aware-primary;
+			}
+		}
+	}
+
+	&.first {
+		&::after {
+			width: 8px;
+			height: 1px;
+			top: calc(50% - 1px);
+		}
+
+		&::before {
+			width: 1px;
+			height: calc(50% + 5px);
+			top: 50%;
+		}
+	}
+
+	&.second {
+		&::after {
+			width: 8px;
+			height: 1px;
+			top: 50%;
+		}
+
+		&::before {
+			width: 1px;
+			height: calc(50% + 5px);
+			top: -5px;
+		}
+	}
+
+	a {
+		color: inherit;
+	}
+}
+
+mina-reporting-graph {
+	height: 120px;
+}
+
+.ok {
+	background-color: $success-container;
+	color: $success-secondary;
+
+	> span {
+		color: $success-primary;
+	}
+}
+
+.not-ok {
+	background-color: $warn-container;
+	color: $warn-secondary;
+
+	> span {
+		color: $warn-primary;
+	}
+}
+
+.dropdown {
+	box-sizing: border-box;
+	max-height: 500px;
+
+	.dropdown-item {
+		display: grid;
+		height: 24px;
+		grid-template-columns: 280px 75px 95px 50px;
+		color: $base-secondary;
+		box-sizing: border-box;
+
+		&:not(.active) .mina-icon {
+			color: $base-divider;
+		}
+
+		&:hover:not(.active) {
+			background-color: $base-container;
+
+			span:nth-child(2) {
+				color: $base-primary;
+			}
+		}
+
+		&.active {
+			background-color: $selected-container;
+
+			span {
+				color: $selected-primary !important;
+			}
+
+			.success-secondary {
+				color: $success-primary !important;
+			}
+		}
+
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	@media (max-width: 700px) {
+		width: 100vw;
+		max-height: 60vh;
+
+		.dropdown-item {
+			height: 48px;
+		}
+	}
+}

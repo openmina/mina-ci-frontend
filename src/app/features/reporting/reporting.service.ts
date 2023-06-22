@@ -27,8 +27,25 @@ export class ReportingService {
       );
   }
 
+  getReportDetail(number: number): Observable<ReportDetail> {
+    return this.http.get<ReportDetailResponse[]>(CONFIG.aggregator + '/builds/' + number + '/blocks').pipe(
+      map((response: ReportDetailResponse[]) => this.mapReportDetail(response)),
+    );
+  }
+
+  getReportsComparison(ids: [number, number]): Observable<Report[]> {
+    let url = CONFIG.aggregator + '/builds?status=success,failure,running,pending,killed';
+    return this.http.get<ReportResponse[]>(url)
+      .pipe(
+        map((reports: ReportResponse[]) => this.mapReports([
+          reports.find(report => report.number === ids[0]),
+          reports.find(report => report.number === ids[1]),
+        ])),
+      );
+  }
+
   private mapReports(reports: ReportResponse[]): Report[] {
-    return reports.map((report: ReportResponse) => {
+    return reports.map((report: ReportResponse, i: number) => {
       const applicationTimesBars = this.getRanges(report.application_times);
       const productionTimesBars = this.getRanges(report.production_times);
       const receiveLatenciesBars = this.getRanges(report.receive_latencies);
@@ -38,11 +55,14 @@ export class ReportingService {
         commit: report.commit,
         branch: report.branch,
         started: toReadableDate(report.started * ONE_THOUSAND, 'HH:mm:ss, dd MMM yy'),
+        timestamp: report.started * ONE_THOUSAND,
         timeAgo: this.getTimeAgo(report.started),
         status: report.status,
         blockCount: report.block_count,
         transactions: report.tx_count || 0,
         canonicalBlockCount: report.cannonical_block_count,
+        requestTimeoutCount: report.request_timeout_count,
+        requestCount: report.request_count,
 
         blockProductionMin: parseFloat(report.block_production_min.toFixed(1)),
         blockProductionAvg: parseFloat(report.block_production_avg.toFixed(1)),
@@ -61,9 +81,9 @@ export class ReportingService {
         applicationTimesBars,
         productionTimesBars,
         receiveLatenciesBars,
-        applicationTimesDeltaBars: this.getDeltaTimes(applicationTimesBars, this.getRanges(report.application_times_previous)),
-        productionTimesDeltaBars: this.getDeltaTimes(productionTimesBars, this.getRanges(report.production_times_previous)),
-        receiveLatenciesDeltaBars: this.getDeltaTimes(receiveLatenciesBars, this.getRanges(report.receive_latencies_previous)),
+        applicationTimesDeltaBars: this.getDeltaTimes(applicationTimesBars, this.getRanges(reports[i + 1]?.application_times ?? [])),
+        productionTimesDeltaBars: this.getDeltaTimes(productionTimesBars, this.getRanges(reports[i + 1]?.production_times ?? [])),
+        receiveLatenciesDeltaBars: this.getDeltaTimes(receiveLatenciesBars, this.getRanges(reports[i + 1]?.receive_latencies ?? [])),
 
         blockApplicationMinDelta: parseFloat(report.block_application_min_delta.toFixed(1)),
         blockApplicationAvgDelta: parseFloat(report.block_application_avg_delta.toFixed(1)),
@@ -80,12 +100,6 @@ export class ReportingService {
     });
   }
 
-  getReportDetail(number: number): Observable<ReportDetail> {
-    return this.http.get<ReportDetailResponse[]>(CONFIG.aggregator + '/builds/' + number + '/blocks').pipe(
-      map((response: ReportDetailResponse[]) => this.mapReportDetail(response)),
-    );
-  }
-
   private mapReportDetail(details: ReportDetailResponse[]): ReportDetail {
     return {
       blocks: details.map((block: ReportDetailResponse) => ({
@@ -100,11 +114,24 @@ export class ReportingService {
         blockProducerNodesLength: block.block_producer_nodes.length,
         peerTimings: block.peer_timings.map(peerTiming => ({
           node: peerTiming.node,
+          nodeSort: parseInt(peerTiming.node.match(/\d+/)![0]) + this.addToSort(peerTiming),
           receiveLatency: peerTiming.receive_latency,
           blockProcessingTime: peerTiming.block_processing_time,
         })),
       })),
     };
+  }
+
+  private addToSort(peerTiming: { node: string; block_processing_time: number; receive_latency: number }): number {
+    if (peerTiming.node.includes('prod')) {
+      return 1000;
+    } else if (peerTiming.node.includes('seed')) {
+      return 2000;
+    } else if (peerTiming.node.includes('snarker')) {
+      return 3000;
+    } else {
+      return 0;
+    }
   }
 
   private getTimeAgo(timestamp: number): string {
@@ -139,7 +166,10 @@ export class ReportingService {
   }
 
   private getRanges(latencies: number[]): ReportBar[] {
-    const result = Array(50).fill(0).map((n: number, i: number) => ({ count: 0, range: i / 1 }));
+    if (latencies.length === 0) {
+      return [];
+    }
+    const result = Array(50).fill(0).map((n: number, i: number) => ({ count: 0, range: i }));
     for (let i = 0; i < latencies.length; i++) {
       const number = latencies[i];
       for (let j = 0; j < result.length; j++) {
@@ -153,6 +183,9 @@ export class ReportingService {
   }
 
   private getDeltaTimes(current: ReportBar[], previous: ReportBar[]): ReportBar[] {
+    if (previous.length === 0) {
+      return current;
+    }
     return current.map((curr: ReportBar, i: number) => {
       return {
         ...curr,
@@ -172,6 +205,8 @@ interface ReportResponse {
   block_count: number;
   cannonical_block_count: number;
   tx_count: number;
+  request_timeout_count: number;
+  request_count: number;
   block_production_min: number;
   block_production_avg: number;
   block_production_max: number;

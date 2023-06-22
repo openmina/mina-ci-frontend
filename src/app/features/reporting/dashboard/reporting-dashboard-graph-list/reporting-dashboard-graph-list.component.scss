@@ -1,0 +1,35 @@
+@import 'variables';
+
+.p-absolute {
+	top: 0;
+	right: 0;
+}
+
+.active {
+	background-color: $selected-container;
+
+	.f-600 {
+		color: $selected-primary;
+	}
+}
+
+
+.graph-footer {
+
+	mat-icon {
+		width: 20px;
+		height: 20px;
+	}
+
+	&.special-selected-alt-1-primary ::ng-deep mat-icon svg path {
+		fill: $special-selected-alt-1-primary;
+	}
+
+	&.special-selected-alt-2-primary ::ng-deep mat-icon svg path {
+		fill: $special-selected-alt-2-primary;
+	}
+
+	&.special-selected-alt-3-primary ::ng-deep mat-icon svg path {
+		fill: $special-selected-alt-3-primary;
+	}
+}

@@ -1,0 +1,11 @@
+<div #parent class="h-100 w-100 flex-row p-relative">
+  <mina-reporting-dashboard-graph-list [class.shrink]="isActivePoint"></mina-reporting-dashboard-graph-list>
+  <mina-horizontal-resizable-container (widthChange)="onWidthChange($event)"
+                                       [class.show]="isActivePoint"
+                                       [maxWidthElement]="parent"
+                                       [minWidth]="500"
+                                       class="no-transition"
+                                       localStorageKey="reporting-trends-side-panel-width">
+    <mina-reporting-dashboard-side-panel></mina-reporting-dashboard-side-panel>
+  </mina-horizontal-resizable-container>
+</div>

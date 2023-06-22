@@ -8,15 +8,23 @@ const routes: Routes = [
     component: ReportingComponent,
     children: [
       {
-        path: ':id',
-        component: ReportingComponent,
-      }
-    ]
-  },
-  {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full',
+        path: 'builds',
+        loadChildren: () => import('./builds/reporting-builds.module').then(m => m.ReportingBuildsModule),
+      },
+      {
+        path: 'compare',
+        loadChildren: () => import('./compare/reporting-compare.module').then(m => m.ReportingCompareModule),
+      },
+      {
+        path: 'trends',
+        loadChildren: () => import('./dashboard/reporting-dashboard.module').then(m => m.ReportingDashboardModule),
+      },
+      {
+        path: '**',
+        redirectTo: 'builds',
+        pathMatch: 'full',
+      },
+    ],
   },
 ];
 

@@ -19,6 +19,8 @@ import { ErrorListComponent } from '@error-preview/error-list/error-list.compone
 import { ErrorPreviewComponent } from '@error-preview/error-preview.component';
 import { ToolbarComponent } from '@app/layout/toolbar/toolbar.component';
 import { ICONS_PROVIDER } from '@core/services/icon-register.service';
+import { SubmenuTabsComponent } from '@app/layout/submenu-tabs/submenu-tabs.component';
+import { AppEffects } from './app.effects';
 
 
 @NgModule({
@@ -27,6 +29,7 @@ import { ICONS_PROVIDER } from '@core/services/icon-register.service';
     ToolbarComponent,
     ErrorListComponent,
     ErrorPreviewComponent,
+    SubmenuTabsComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,7 @@ import { ICONS_PROVIDER } from '@core/services/icon-register.service';
         strictStateSerializability: true,
       },
     }),
-    EffectsModule.forRoot(),
+    EffectsModule.forRoot([AppEffects]),
     NgrxRouterStoreModule,
     !CONFIG.production ? StoreDevtoolsModule.instrument({ maxAge: 50 }) : [],
     HttpClientModule,

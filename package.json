@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "docker-build": "docker build --no-cache -t directcuteo/mina-ci-frontend:reports23 . && docker push directcuteo/mina-ci-frontend:reports23"
+    "docker-build": "docker build --no-cache -t directcuteo/mina-ci-frontend:reports39 . && docker push directcuteo/mina-ci-frontend:reports39",
+    "tests": "npx cypress open --config baseUrl=http://localhost:4444",
+    "tests:headless": "npx cypress run --headless --config baseUrl=http://localhost:4444"
   },
   "private": true,
   "dependencies": {
@@ -38,6 +40,8 @@
     "@angular/compiler-cli": "^15.2.1",
     "@types/jasmine": "~4.0.0",
     "@types/d3": "^7.4.0",
+    "cypress": "^12.6.0",
+    "cypress-real-events": "^1.7.6",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",

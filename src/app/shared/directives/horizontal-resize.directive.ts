@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { delay, distinctUntilChanged, filter, fromEvent, map, merge, Observable, Subject, switchMap, takeUntil, tap, throttleTime } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -7,9 +7,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @Directive({
   selector: '[horizontalResize]',
 })
-export class HorizontalResizeDirective implements AfterViewInit {
+export class HorizontalResizeDirective implements AfterViewInit, OnChanges {
 
   @Input() minWidth: number | null;
+  @Input() maxWidth: number | null;
   @Input() maxWidthElement: HTMLElement | null;
   @Input() localStorageKey: string;
 
@@ -22,8 +23,8 @@ export class HorizontalResizeDirective implements AfterViewInit {
     );
 
   private resizeInProgress: boolean;
-  private subj = new Subject<number>();
-  private maxWidth: number;
+  private subj: Subject<number> = new Subject<number>();
+  private maxAllowedWidth: number;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document,
               @Inject(ElementRef) private readonly elementRef: ElementRef<HTMLElement>) {
@@ -44,8 +45,8 @@ export class HorizontalResizeDirective implements AfterViewInit {
                 const newValue = left + width - clientX;
                 if (this.minWidth && this.minWidth > newValue) {
                   return this.minWidth;
-                } else if (this.maxWidth && this.maxWidth < newValue) {
-                  return this.maxWidth;
+                } else if (this.maxAllowedWidth && this.maxAllowedWidth < newValue) {
+                  return this.maxAllowedWidth;
                 } else {
                   return newValue;
                 }
@@ -60,7 +61,7 @@ export class HorizontalResizeDirective implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.maxWidth = this.maxWidthElement.offsetWidth - 50;
+    this.maxAllowedWidth = this.getMaxAllowedWidth();
     const localStorageWidth = Number(localStorage.getItem(this.localStorageKey));
     if (localStorageWidth) {
       this.subj.next(localStorageWidth);
@@ -73,14 +74,24 @@ export class HorizontalResizeDirective implements AfterViewInit {
         distinctUntilChanged(),
       )
       .subscribe(() => {
-        this.maxWidth = this.maxWidthElement.offsetWidth - 50;
+        this.maxAllowedWidth = this.getMaxAllowedWidth();
         const currentWidth = Number(localStorage.getItem(this.localStorageKey));
-        if (this.maxWidth < this.minWidth) {
-          this.maxWidth = this.minWidth;
-          this.subj.next(this.maxWidth);
-        } else if (this.maxWidth < currentWidth) {
-          this.subj.next(this.maxWidth);
+        if (this.maxAllowedWidth < this.minWidth) {
+          this.maxAllowedWidth = this.minWidth;
+          this.subj.next(this.maxAllowedWidth);
+        } else if (this.maxAllowedWidth < currentWidth) {
+          this.subj.next(this.maxAllowedWidth);
         }
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['maxWidth']?.previousValue !== changes['maxWidth']?.currentValue) {
+      this.maxAllowedWidth = this.getMaxAllowedWidth();
+    }
+  }
+
+  private getMaxAllowedWidth(): number {
+    return this.maxWidth ?? (this.maxWidthElement.offsetWidth - 50);
   }
 }

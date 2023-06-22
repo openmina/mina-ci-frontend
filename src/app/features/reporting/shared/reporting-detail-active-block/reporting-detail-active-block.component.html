@@ -1,0 +1,77 @@
+<div class="flex-row align-center h-xl">
+  <div class="h-100 pl-12 tertiary primary-hover mr-10 flex-row align-center pointer" (click)="onClose()">
+    <span class="mina-icon icon-200">arrow_back</span>
+  </div>
+  <span class="primary f-600">Block {{ block?.blockHash | truncateMid: 10: 8 }} </span>
+</div>
+<div class="h-minus-xl flex-column">
+  <div class="tab-group h-lg pl-12 pb-10 pr-12">
+    <button class="tab mr-10" [class.selected]="selectedTabIndex === 0"
+            (click)="selectTab(0)">Chain
+    </button>
+    <button class="tab" [class.selected]="selectedTabIndex === 1"
+            (click)="selectTab(1)">Network
+    </button>
+  </div>
+  <div class="flex-column h-minus-lg border-top">
+    <ng-container [ngSwitch]="selectedTabIndex">
+      <ng-container *ngSwitchCase="0">
+        <div *ngIf="block" class="h-100 overflow-y-auto flex-column tertiary pl-12 pr-12">
+          <div class="flex-row flex-between align-center h-lg">
+            Date
+            <div class="primary">{{ block.datetime }}</div>
+          </div>
+          <div class="flex-row flex-between align-center h-lg">
+            Height
+            <div class="primary">{{ block.height }}</div>
+          </div>
+          <div class="flex-row flex-between align-center h-lg">
+            Global Slot
+            <div class="primary">{{ block.globalSlot }}</div>
+          </div>
+          <div class="flex-row flex-between align-center h-lg">
+            Transactions
+            <div class="primary">{{ block.transactions }}</div>
+          </div>
+          <div class="flex-row flex-between align-center h-lg">
+            Block producer
+            <div class="primary">{{ block.blockProducer | truncateMid }}</div>
+          </div>
+          <div class="flex-row flex-between align-center h-lg">
+            Max Receive Latency
+            <div class="primary" [innerHTML]="block.maxReceiveLatency | secDuration: secConfig"></div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="1">
+        <div class="h-100 overflow-y-auto flex-column">
+          <div class="mina-table flex-grow overflow-x-auto">
+            <div class="row head sorting p-relative pr-12" *ngIf="currentSort">
+              <span *ngFor="let th of tableHeads; let i=index"
+                    (click)="sortTable(th.sort ?? th.name)"
+                    [class.active]="currentSort.sortBy === (th.sort ?? th.name)"
+                    [class.p-relative]="th.tooltip"
+                    class="pointer">
+                {{ th.name }}
+                <span [class.flip]="currentSort.sortDirection === 'descending'"
+                      [class.show]="currentSort.sortBy === (th.sort ?? th.name)"
+                      class="mina-icon f-18 icon-200">arrow_upward
+                </span>
+              </span>
+            </div>
+            <cdk-virtual-scroll-viewport class="border-bottom h-100 overflow-y-auto h-minus-lg"
+                                         [itemSize]="36">
+              <div *cdkVirtualFor="let peer of block?.peerTimings; let i=index"
+                   class="row">
+                <span>{{ peer.node }}</span>
+                <span class="primary" [innerHTML]="peer.blockProcessingTime | secDuration: secConfig"></span>
+                <span class="primary" [innerHTML]="peer.receiveLatency | secDuration: secConfig"></span>
+              </div>
+            </cdk-virtual-scroll-viewport>
+          </div>
+
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

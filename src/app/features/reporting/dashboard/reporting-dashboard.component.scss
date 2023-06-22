@@ -1,0 +1,20 @@
+mina-reporting-dashboard-graph-list {
+	&.shrink {
+		width: calc(100% - 500px);
+	}
+
+	&:not(.shrink) {
+		width: 100% !important;
+	}
+}
+
+mina-horizontal-resizable-container {
+	width: 500px;
+	height: 100%;
+	position: absolute;
+	right: -500px;
+
+	&.show {
+		right: 0 !important;
+	}
+}

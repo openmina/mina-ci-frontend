@@ -1,0 +1,91 @@
+kind: pipeline
+name: Build and Test Frontend
+type: docker
+
+steps:
+  - name: build
+    image: docker:latest
+    commands:
+      - docker build --no-cache -t directcuteo/mina-ci-frontend:latest -f Dockerfile2 .
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+
+  - name: frontend-server
+    image: directcuteo/mina-ci-frontend:latest
+    pull: if-not-exists
+    detach: true
+    privileged: true
+    depends_on:
+      - build
+
+  - name: prepare-tests
+    image: cypress/included:12.6.0
+    commands:
+      - npm install
+    depends_on:
+      - build
+
+  - name: app-submenu-tabs
+    image: cypress/included:12.6.0
+    commands:
+      - cypress run --config-file "cypress.config.js" --spec "cypress/e2e/app/submenu-tabs/submenu-tabs.cy.ts"
+    depends_on:
+      - prepare-tests
+
+  - name: reporting-builds-table
+    image: cypress/included:12.6.0
+    commands:
+      - cypress run --config-file "cypress.config.js" --spec "cypress/e2e/reporting/builds/reporting-builds-table.cy.ts"
+    depends_on:
+      - prepare-tests
+
+  - name: reporting-compare-first-section
+    image: cypress/included:12.6.0
+    commands:
+      - cypress run --config-file "cypress.config.js" --spec "cypress/e2e/reporting/compare/reporting-compare-first-section.cy.ts"
+    depends_on:
+      - prepare-tests
+
+  - name: reporting-trends
+    image: cypress/included:12.6.0
+    commands:
+      - cypress run --config-file "cypress.config.js" --spec "cypress/e2e/reporting/trends/reporting-trends.cy.ts"
+    depends_on:
+      - prepare-tests
+
+  - name: copy-videos
+    image: alpine
+    commands:
+      - cp -R /drone/src/cypress/videos/ /tmp/cache
+    volumes:
+      - name: test-vol
+        path: /tmp/cache
+        mode: "rw"
+        temp: false
+    when:
+      status:
+        - failure
+        - success
+    depends_on:
+      - app-submenu-tabs
+      - reporting-builds-table
+      - reporting-compare-first-section
+      - reporting-trends
+
+
+image_pull_secrets:
+  - docker_pull_secret
+
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
+  - name: test-vol
+    host:
+      path: /home/openmina/mina-frontend-videos
+
+trigger:
+  branch:
+    - local
+  event: push

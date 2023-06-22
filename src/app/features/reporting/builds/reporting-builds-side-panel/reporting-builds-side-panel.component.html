@@ -1,0 +1,20 @@
+<div class="flex-column h-100">
+  <div class="flex-row flex-between align-center pl-12 pr-12 h-xxl">
+    <span class="secondary f-600 truncate" *ngIf="activeReport">Build {{ activeReport.number }} - {{ activeReport.message }}</span>
+    <span class="mina-icon pointer tertiary primary-hover f-18"
+          (click)="closeSidePanel()">close
+    </span>
+  </div>
+  <div class="flex-column h-minus-xxl">
+    <mina-reporting-detail [activeReport]="activeReport"
+                           [blocks]="blocks"
+                           [nodesCounters]="nodesCounters"
+                           [currentBlocksSort]="currentBlocksSort"
+                           [currentPeerSort]="currentPeerSort"
+                           [activeBlock]="activeBlock"
+                           [graphConfig]="graphConfig"
+                           (sortBlocks)="sortBlocksTable($event)"
+                           (sortPeers)="sortPeersTable($event)"
+                           (changeBlock)="changeActiveBlock($event)"></mina-reporting-detail>
+  </div>
+</div>
