@@ -7,10 +7,13 @@ export interface Report {
   branch: string;
   started: string;
   timeAgo: string;
+  timestamp: number;
   status: 'success' | 'running' | 'pending' | 'failure' | 'killed';
   transactions: number;
   blockCount: number;
   canonicalBlockCount: number;
+  requestTimeoutCount: number;
+  requestCount: number;
 
   blockProductionMin: number;
   blockProductionAvg: number;

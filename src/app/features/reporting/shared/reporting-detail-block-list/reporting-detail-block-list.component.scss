@@ -1,0 +1,23 @@
+@import 'src/assets/styles/utilities/variables';
+
+.mina-table {
+	.row {
+		grid-template-columns: 80px 80px 70px 55px 95px 100px;
+		color: $base-tertiary;
+
+		&:not(.head) {
+			cursor: pointer;
+
+			&:hover {
+				.mina-icon {
+					opacity: 1 !important;
+				}
+			}
+		}
+	}
+
+	.cdk-virtual-scroll-viewport {
+		min-width: 80px + 80px + 70px + 55px + 95px + 100px;
+		overflow-x: hidden;
+	}
+}

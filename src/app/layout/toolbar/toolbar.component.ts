@@ -1,16 +1,12 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { delay, filter, map } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { MinaState } from '@app/app.setup';
 import { selectAppMenu } from '@app/app.state';
 import { LoadingService } from '@core/services/loading.service';
-import { ManualDetection } from '@shared/base-classes/manual-detection.class';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { DOCUMENT } from '@angular/common';
 import { ThemeType } from '@shared/types/core/theme/theme-types.type';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { ReportingGetReports } from '@reporting/reporting.actions';
 
 @Component({
   selector: 'mina-toolbar',
@@ -91,9 +87,5 @@ export class ToolbarComponent extends StoreDispatcher implements OnInit {
           this.detect();
         }
       });
-  }
-
-  refetchReports(): void {
-    this.dispatch(ReportingGetReports);
   }
 }

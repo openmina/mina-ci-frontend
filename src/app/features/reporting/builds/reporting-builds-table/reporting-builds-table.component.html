@@ -1,0 +1,167 @@
+<div class="mina-table overflow-x-auto pt-10 h-100">
+  <cdk-virtual-scroll-viewport class="border-bottom h-100 overflow-y-scroll"
+                               [itemSize]="itemSize">
+    <div *cdkVirtualFor="let report of reports; let i=index"
+         [style.height.px]="itemSize + 10"
+         class="c-row pb-10 pl-10 pr-5">
+      <div (click)="onRowClick(report)"
+           [class.active]="activeReport?.number === report.number"
+           class="c-row-content border border-rad-8 p-10">
+        <div class="info flex-column flex-between align-start h-100">
+          <a class="title text-decoration-underline-hover w-100 truncate"
+             [tooltip]="'<div class=&quot;f-600&quot;>Open in Drone:</div><br> ' + '<span class=&quot;text-italic&quot;>' + report.message + '</span>'"
+             [maxWidth]="1000" [cancelFormatting]="true" [placeToLeft]="true"
+             [href]="droneUrl + '/' + report.number" target="_blank"
+             (click)="$event.stopPropagation()"
+             [class.aware-secondary]="report.status === 'success' && report.isRegression">{{ report.message }}</a>
+          <span class="tertiary flex-row align-center flex-wrap">
+            <span class="mina-icon icon-200 mr-5">commit</span>
+            <a [href]="'https://github.com/openmina/mina/commit/' + report.commit" target="_blank"
+               [tooltip]="'Open in GitHub'" (click)="$event.stopPropagation()"
+               class="tertiary text-decoration-underline-hover">
+              {{ report.commit.substring(0, 7) }}
+            </a>
+            <span>&nbsp;to {{ report.branch }}&nbsp;&nbsp;</span>
+            <span>{{ report.timeAgo }} ago · {{ report.started }}</span>
+          </span>
+          <div class="flex-row align-center">
+            <span *ngIf="report.status !== 'running'; else running"
+                  class="mina-icon f-20 mr-5 icon-300"
+                  [ngClass]="report.status === 'success' ? 'success-secondary' : (report.status === 'pending') ? 'tertiary' : 'warn-secondary'">
+              {{ iconMap[report.status] }}
+            </span>
+            <ng-template #running>
+              <mat-icon class="loading-icon f-20 mr-5 secondary" svgIcon="loading"></mat-icon>
+            </ng-template>
+            <span class="text-capitalize f-600"
+                  [ngClass]="report.status === 'success' ? 'success-secondary' : (report.status === 'running' || report.status === 'pending') ? 'tertiary' : 'warn-secondary'">
+              {{ report.status }}
+            </span>
+            <span class="mina-icon icon-200 tertiary ml-8 mr-8">keyboard_double_arrow_right</span>
+            <ng-container *ngIf="report.status === 'success'; else ignored">
+              <ng-container *ngIf="report.isRegression; else passed">
+                <span class="mina-icon f-20 mr-5 icon-300 aware-secondary">error</span>
+                <span class="aware-secondary f-600">Regression</span>
+              </ng-container>
+              <ng-template #passed>
+                <span class="mina-icon f-20 mr-5 icon-300 success-secondary">task_alt</span>
+                <span class="success-secondary f-600">Passed</span>
+              </ng-template>
+            </ng-container>
+            <ng-template #ignored>
+              <span class="mina-icon f-20 mr-5 icon-300 tertiary">hide_source</span>
+              <span class="tertiary f-600">No Verdict</span>
+            </ng-template>
+          </div>
+          <div class="fx-row-vert-cent flex-stretch w-100">
+            <div class="w-100 flex-column flex-around bg-container border-rad-4 p-8 mr-5 secondary">
+              Transactions
+              <span class="f-600 f-big">{{ report.transactions }}</span>
+            </div>
+            <div class="w-100 bg-container border-rad-4 mr-5"
+                 [tooltip]="report.canonicalBlockCount + ' canonical blocks, ' + report.blockCount + ' total blocks'">
+              <div class="flex-column flex-around bg-container-hover p-8 h-100 secondary">
+                Total Blocks
+                <span class="f-600 f-big">{{ report.blockCount }}</span>
+              </div>
+            </div>
+            <div class="w-100 flex-column flex-around bg-container border-rad-4 p-8 mr-5 secondary">
+              Total Requests
+              <span class="f-600 f-big">{{ report.requestCount }}</span>
+            </div>
+            <div class="w-100 flex-column flex-around bg-container border-rad-4 p-8 secondary">
+              Request Timeouts
+              <span class="f-600 f-big">{{ report.requestTimeoutCount }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="graphs flex-row ml-5 flex-grow">
+          <div class="bg-container border-rad-4 mr-5 pl-12 pr-12 pt-8 pb-8">
+            <div class="fx-row-vert-cent flex-between h-sm">
+              <span class="tertiary f-600">Block Production</span>
+              <div class="flex-row">
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5 mr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.blockProductionAvgDelta <= reports[i+1].blockProductionAvgDelta) : (i < reports.length-1 && report.blockProductionAvg <= reports[i+1].blockProductionAvg)) ? 'ok' : 'not-ok'">
+                  Avg
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.blockProductionAvgDelta : report.blockProductionAvg }}s</span>
+                </span>
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.blockProductionMaxDelta <= reports[i+1].blockProductionMaxDelta) : (i < reports.length-1 && report.blockProductionMax <= reports[i+1].blockProductionMax)) ? 'ok' : 'not-ok'">
+                  Max
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.blockProductionMaxDelta : report.blockProductionMax }}s</span>
+                </span>
+              </div>
+            </div>
+            <ng-container *ngIf="report.productionTimesBars.length">
+              <mina-reporting-graph class="d-block h-minus-sm"
+                                    [maxPoint]="graphConfig.graphMaxPointProduction"
+                                    [maxPointDelta]="graphConfig.graphMaxPointProductionDelta"
+                                    [minPointDelta]="graphConfig.graphMinPointProductionDelta"
+                                    [delta]="delta"
+                                    [color]="'var(--special-selected-alt-2-primary)'"
+                                    [bars]="delta ? report.productionTimesDeltaBars : report.productionTimesBars"></mina-reporting-graph>
+            </ng-container>
+          </div>
+          <div class="bg-container border-rad-4 pl-12 pr-12 pt-8 pb-8 mr-5">
+            <div class="flex-row flex-between align-center h-sm">
+              <span class="tertiary f-600">Block Broadcast</span>
+              <div class="flex-row">
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5 mr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.receiveLatencyAvgDelta <= reports[i+1].receiveLatencyAvgDelta) : (i < reports.length-1 && report.latencyAvg <= reports[i+1].latencyAvg)) ? 'ok' : 'not-ok'">
+                  Avg
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.receiveLatencyAvgDelta : report.latencyAvg }}s</span>
+                </span>
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.receiveLatencyMaxDelta <= reports[i+1].receiveLatencyMaxDelta) : (i < reports.length-1 && report.latencyMax <= reports[i+1].latencyMax)) ? 'ok' : 'not-ok'">
+                  Max
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.receiveLatencyMaxDelta : report.latencyMax }}s</span>
+                </span>
+              </div>
+            </div>
+            <ng-container *ngIf="report.receiveLatenciesBars.length">
+              <mina-reporting-graph class="d-block h-minus-sm"
+                                    [delta]="delta"
+                                    [maxPoint]="graphConfig.graphMaxPointLatency"
+                                    [maxPointDelta]="graphConfig.graphMaxPointLatencyDelta"
+                                    [minPointDelta]="graphConfig.graphMinPointLatencyDelta"
+                                    [color]="'var(--special-selected-alt-1-primary)'"
+                                    [bars]="delta ? report.receiveLatenciesDeltaBars : report.receiveLatenciesBars"></mina-reporting-graph>
+            </ng-container>
+          </div>
+          <div class="bg-container border-rad-4 pl-12 pr-12 pt-8 pb-8">
+            <div class="flex-row flex-between align-center h-sm">
+              <span class="tertiary f-600">Block Application</span>
+              <div class="flex-row">
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5 mr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.blockApplicationAvgDelta <= reports[i+1].blockApplicationAvgDelta) : (i < reports.length-1 && report.blockApplicationAvg <= reports[i+1].blockApplicationAvg)) ? 'ok' : 'not-ok'">
+                  Avg
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.blockApplicationAvgDelta : report.blockApplicationAvg }}s</span>
+                </span>
+                <span class="h-sm lh-sm border-rad-4 pl-5 pr-5"
+                      [ngClass]="(delta ? (i < reports.length-1 && report.blockApplicationMaxDelta <= reports[i+1].blockApplicationMaxDelta) : (i < reports.length-1 && report.blockApplicationMax <= reports[i+1].blockApplicationMax)) ? 'ok' : 'not-ok'">
+                  Max
+                  <ng-container *ngIf="delta">Δ</ng-container>&nbsp;
+                  <span class="f-600">{{ delta ? report.blockApplicationMaxDelta : report.blockApplicationMax }}s</span>
+                </span>
+              </div>
+            </div>
+            <ng-container *ngIf="report.applicationTimesBars.length">
+              <mina-reporting-graph class="d-block h-minus-sm"
+                                    [delta]="delta"
+                                    [maxPoint]="graphConfig.graphMaxPointApplication"
+                                    [maxPointDelta]="graphConfig.graphMaxPointApplicationDelta"
+                                    [minPointDelta]="graphConfig.graphMinPointApplicationDelta"
+                                    [color]="'var(--special-selected-alt-3-primary)'"
+                                    [bars]="delta ? report.applicationTimesDeltaBars : report.applicationTimesBars"></mina-reporting-graph>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>

@@ -16,6 +16,7 @@ RUN npm prune --production
 
 FROM nginx:alpine
 ENV AGGREGATOR_URL=$AGGREGATOR_URL
+ENV DRONE_URL=$DRONE_URL
 COPY --from=BUILD_IMAGE /app/mina-ci-frontend/dist/mina-ci-frontend /usr/share/nginx/html
 COPY --from=BUILD_IMAGE /app/mina-ci-frontend/nginx.conf /etc/nginx/nginx.conf
 

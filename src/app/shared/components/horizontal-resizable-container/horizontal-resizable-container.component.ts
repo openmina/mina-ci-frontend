@@ -10,6 +10,7 @@ export class HorizontalResizableContainerComponent {
 
   @Input() minWidth: number | null = null;
   @Input() maxWidthElement: HTMLElement | null = null;
+  @Input() maxWidth: number | null = null;
   @Input() localStorageKey: string;
   @Output() widthChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() startResizing: EventEmitter<void> = new EventEmitter<void>();

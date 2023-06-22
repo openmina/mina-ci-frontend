@@ -9,8 +9,10 @@ export class IconRegisterService {
               private sanitizer: DomSanitizer) { }
 
   registerIcons(): void {
-    this.iconRegistry.addSvgIcon('drone', this.sanitizer.bypassSecurityTrustResourceUrl('assets/images/icons/drone.svg'));
-    this.iconRegistry.addSvgIcon('loading', this.sanitizer.bypassSecurityTrustResourceUrl('assets/images/icons/loading.svg'));
+    const icons = ['drone', 'loading', 'circle-dash', 'github'];
+    icons.forEach(icon => {
+      this.iconRegistry.addSvgIcon(icon, this.sanitizer.bypassSecurityTrustResourceUrl(`assets/images/icons/${icon}.svg`));
+    });
   }
 }
 

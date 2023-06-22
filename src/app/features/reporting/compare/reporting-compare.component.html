@@ -1,0 +1,22 @@
+<div #parent class="flex-row align-stretch h-100 w-100 p-relative">
+  <mina-reporting-compare-first-section></mina-reporting-compare-first-section>
+  <mina-horizontal-resizable-container #firstResizeContainer
+                                       (widthChange)="onWidthChange1($event)"
+                                       [minWidth]="minWidth1"
+                                       [maxWidth]="parent.offsetWidth - 300"
+                                       class="first-hrc no-transition"
+                                       localStorageKey="reporting-compare-first">
+    <div #parent2 class="h-100 w-100 flex-row p-relative">
+      <mina-reporting-compare-second-section></mina-reporting-compare-second-section>
+      <mina-horizontal-resizable-container #secondResizeContainer
+                                           (widthChange)="onWidthChange2($event)"
+                                           [minWidth]="300"
+                                           [maxWidth]="maxWidth2 || (parent2.offsetWidth - 300)"
+                                           class="second-hrc no-transition"
+                                           localStorageKey="reporting-compare-second">
+        <mina-reporting-compare-third-section></mina-reporting-compare-third-section>
+      </mina-horizontal-resizable-container>
+    </div>
+  </mina-horizontal-resizable-container>
+</div>
+

@@ -18,6 +18,7 @@ export class MinaTooltipDirective implements OnInit, OnDestroy {
   @Input() globalTooltip: boolean = true;
   @Input() cancelFormatting: boolean = false;
   @Input() maxWidth: number = 250;
+  @Input() placeToLeft: boolean = false;
 
   private popup: HTMLDivElement = this.document.getElementById('mina-tooltip') as HTMLDivElement;
   private timer: any;
@@ -45,7 +46,7 @@ export class MinaTooltipDirective implements OnInit, OnDestroy {
     }
     this.timer = setTimeout(() => {
       if (!this.cancelShowing) {
-        MinaTooltipDirective.showTooltip(this.popup, this.el.nativeElement, this.tooltip.toString(), this.maxWidth);
+        MinaTooltipDirective.showTooltip(this.popup, this.el.nativeElement, this.tooltip.toString(), this.maxWidth, this.placeToLeft);
         if (this.cancelFormatting) {
           this.popup.classList.add('cancel-formatting');
         }
@@ -66,10 +67,10 @@ export class MinaTooltipDirective implements OnInit, OnDestroy {
     MinaTooltipDirective.hideTooltip(this.popup);
   }
 
-  static showTooltip(popup: HTMLDivElement, nativeElement: HTMLElement, message: string, maxWidth: number): void {
+  static showTooltip(popup: HTMLDivElement, nativeElement: HTMLElement, message: string, maxWidth: number, placeToLeft: boolean = false): void {
     popup.innerHTML = message;
     const boundingClientRect = nativeElement.getBoundingClientRect();
-    let x = boundingClientRect.left + (nativeElement.offsetWidth / 2) - (popup.offsetWidth / 2);
+    let x = placeToLeft ? (boundingClientRect.left) : (boundingClientRect.left + (nativeElement.offsetWidth / 2) - (popup.offsetWidth / 2));
     let y = boundingClientRect.top + nativeElement.offsetHeight + TOOLTIP_OFFSET;
 
     let pos: 'top' | 'bottom' = 'top';

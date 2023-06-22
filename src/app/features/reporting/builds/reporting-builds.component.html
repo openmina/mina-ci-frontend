@@ -1,0 +1,16 @@
+<div class="flex-column h-100">
+  <mina-reporting-builds-toolbar></mina-reporting-builds-toolbar>
+  <div #parent class="h-100 w-100 flex-row p-relative">
+    <mina-reporting-builds-table [class.shrink]="isActiveRow"></mina-reporting-builds-table>
+    <mina-horizontal-resizable-container (endResizing)="toggleResizing()"
+                                         (startResizing)="toggleResizing()"
+                                         (widthChange)="onWidthChange($event)"
+                                         [class.show]="isActiveRow"
+                                         [maxWidthElement]="parent"
+                                         [minWidth]="500"
+                                         class="no-transition"
+                                         localStorageKey="reporting-side-panel-width">
+      <mina-reporting-builds-side-panel></mina-reporting-builds-side-panel>
+    </mina-horizontal-resizable-container>
+  </div>
+</div>
